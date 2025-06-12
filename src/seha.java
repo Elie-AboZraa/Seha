@@ -25,7 +25,7 @@ public class seha extends Application {
             Scene scene = new Scene(root, 1400, 900);
             scene.getStylesheets().add(getClass().getResource("/Scene/SceneStyle/HomePage.css").toExternalForm());
             
-            // Keep your original icon code
+            // Set Icone for the App
             try {
                 Image icon = new Image("file:Resorses/favicon-2.png");
                 stage.getIcons().add(icon);
