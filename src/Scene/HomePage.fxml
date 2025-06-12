@@ -8,31 +8,31 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="900.0" prefWidth="1300.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="900.0" prefWidth="1300.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="HomePageController">
    <children>
       <Label alignment="CENTER" contentDisplay="CENTER" layoutX="334.0" layoutY="163.0" prefHeight="267.0" prefWidth="732.0" text="أختر الصفحة التي تردي اختيراها " textAlignment="CENTER" AnchorPane.bottomAnchor="470.0" AnchorPane.leftAnchor="334.0" AnchorPane.rightAnchor="334.0" AnchorPane.topAnchor="163.0">
          <font>
             <Font name="Noto IKEA Arabic Bold" size="50.0" />
          </font>
       </Label>
-      <Pane layoutX="464.0" layoutY="423.0" prefHeight="283.0" prefWidth="473.0">
+      <Pane layoutX="421.0" layoutY="390.0" prefHeight="283.0" prefWidth="473.0">
          <children>
-            <Button layoutX="260.0" layoutY="74.0" mnemonicParsing="false" prefHeight="70.0" prefWidth="200.0" text="اجازة جديدة">
+            <Button layoutX="260.0" layoutY="74.0" mnemonicParsing="false" onAction="#CreateLeave" prefHeight="70.0" prefWidth="200.0" text="اجازة جديدة">
                <font>
                   <Font name="Noto IKEA Arabic Bold" size="25.0" />
                </font>
             </Button>
-            <Button layoutX="261.0" layoutY="163.0" mnemonicParsing="false" prefHeight="70.0" prefWidth="200.0" text="مشهد مراجعة">
+            <Button layoutX="261.0" layoutY="163.0" mnemonicParsing="false" onAction="#ReviewScene" prefHeight="70.0" prefWidth="200.0" text="مشهد مراجعة">
                <font>
                   <Font name="Noto IKEA Arabic Bold" size="25.0" />
                </font>
             </Button>
-            <Button layoutX="40.0" layoutY="163.0" mnemonicParsing="false" prefHeight="70.0" prefWidth="200.0" text="مرافقة مريض">
+            <Button layoutX="40.0" layoutY="163.0" mnemonicParsing="false" onAction="#PatientEscort" prefHeight="70.0" prefWidth="200.0" text="مرافقة مريض">
                <font>
                   <Font name="Noto IKEA Arabic Bold" size="25.0" />
                </font>
             </Button>
-            <Button layoutX="40.0" layoutY="74.0" mnemonicParsing="false" prefHeight="70.0" prefWidth="200.0" text="تقرير طبي">
+            <Button layoutX="40.0" layoutY="74.0" mnemonicParsing="false" onAction="#MedicalReport" prefHeight="70.0" prefWidth="200.0" text="تقرير طبي">
                <font>
                   <Font name="Noto IKEA Arabic Bold" size="25.0" />
                </font>
@@ -46,3 +46,4 @@
       </ImageView>
    </children>
 </AnchorPane>
+

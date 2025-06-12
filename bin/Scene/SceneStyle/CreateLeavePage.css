@@ -1,0 +1,126 @@
+/* Main background color - darker white */
+.root {
+    -fx-background-color: #f0f5fa; /* Darker white/light gray background */
+    -fx-font-family: 'Noto IKEA Arabic Bold', sans-serif;
+}
+
+/* Main title styling */
+.label.title {
+    -fx-text-fill: #044e7c; /* Dark blue color */
+    -fx-font-size: 50px;
+    -fx-alignment: center;
+}
+
+/* Form labels */
+.label {
+    -fx-text-fill: #044e7c;
+    -fx-font-size: 16px;
+}
+
+/* Toolbar styling */
+.tool-bar {
+    -fx-background-color: linear-gradient(to bottom right, #088cc3, #05b0b9);
+    -fx-padding: 10px;
+    -fx-spacing: 15px;
+}
+
+/* Toolbar buttons */
+.tool-bar .button {
+    -fx-background-color: transparent;
+    -fx-text-fill: white;
+    -fx-font-size: 22px;
+    -fx-font-weight: bold;
+    -fx-padding: 8px 15px;
+    -fx-background-radius: 15px;
+    -fx-border-color: #e0f4f7;
+    -fx-border-radius: 15px;
+    -fx-border-width: 1px;
+    -fx-cursor: hand;
+}
+
+.tool-bar .button:hover {
+    -fx-background-color: rgba(255, 255, 255, 0.2);
+    -fx-scale-x: 1.03;
+    -fx-scale-y: 1.03;
+}
+
+/* Main buttons styling */
+.button {
+    -fx-background-color: linear-gradient(to bottom right, #088cc3, #05b0b9);
+    -fx-text-fill: white;
+    -fx-font-size: 22px;
+    -fx-font-weight: bold;
+    -fx-background-radius: 15px;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 6, 0.1, 2, 2);
+    -fx-padding: 10px 20px;
+    -fx-border-color: #e0f4f7;
+    -fx-border-radius: 15px;
+    -fx-border-width: 1px;
+}
+
+.button:hover {
+    -fx-background-color: linear-gradient(to bottom right, #05b0b9, #088cc3);
+    -fx-scale-x: 1.03;
+    -fx-scale-y: 1.03;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.4), 8, 0.1, 2, 2);
+}
+
+.button:pressed {
+    -fx-background-color: #066f9c;
+    -fx-scale-x: 0.98;
+    -fx-scale-y: 0.98;
+}
+
+/* Form pane styling - slightly darker than root */
+.pane {
+    -fx-background-color: #f8fbfe; /* Slightly darker than root */
+    -fx-background-radius: 8px;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 10, 0, 0, 2);
+    -fx-padding: 20px;
+    -fx-border-color: #e1e8ed;
+    -fx-border-width: 1px;
+    -fx-border-radius: 8px;
+}
+
+/* Text field styling */
+.text-field, .text-area, .date-picker {
+    -fx-background-color: #ffffff;
+    -fx-border-color: #d6e7f0;
+    -fx-border-radius: 8px;
+    -fx-border-width: 1px;
+    -fx-font-family: "Noto IKEA Arabic";
+    -fx-font-size: 16px;
+    -fx-padding: 8px 12px;
+}
+
+.text-field:focused, .text-area:focused, .date-picker:focused {
+    -fx-border-color: #088cc3;
+    -fx-effect: dropshadow(gaussian, rgba(8, 140, 195, 0.2), 5, 0, 0, 1);
+}
+
+/* Text area specific styling */
+.text-area {
+    -fx-background-insets: 0;
+    -fx-background-color: transparent, white, transparent, white;
+}
+
+.text-area .content {
+    -fx-background-color: white;
+    -fx-border-color: #d6e7f0;
+    -fx-border-radius: 8px;
+}
+
+/* Date picker styling */
+.date-picker .arrow-button {
+    -fx-background-color: #088cc3;
+    -fx-background-radius: 0 8px 8px 0;
+}
+
+.date-picker .arrow-button:hover {
+    -fx-background-color: #05b0b9;
+}
+
+.date-picker .text-field {
+    -fx-background-radius: 8px 0 0 8px;
+}
