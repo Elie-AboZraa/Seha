@@ -13,6 +13,7 @@
         "c:\\Visual Studio\\javafx-sdk-24.0.1\\lib\\javafx-swt.jar",
         "c:\\Visual Studio\\javafx-sdk-24.0.1\\lib\\jdk.jsobject.jar",
         "c:\\Visual Studio\\javafx-sdk-24.0.1\\lib\\jfx.incubator.input.jar",
-        "c:\\Visual Studio\\javafx-sdk-24.0.1\\lib\\jfx.incubator.richtext.jar"
+        "c:\\Visual Studio\\javafx-sdk-24.0.1\\lib\\jfx.incubator.richtext.jar",
+        "c:\\Visual Studio\\gson-2.10.1.jar"
     ]
 }
