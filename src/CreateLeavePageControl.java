@@ -146,6 +146,16 @@ private void translateArabicToEnglish(String arabicText, TextField targetField) 
         stage.setScene(scene);
         stage.show();
     }
+    @FXML
+    void saveTheData(ActionEvent event) {
+        // Add your save functionality here
+        System.out.println("Saving data...");
+        // Example: Print all field values
+        System.out.println("Report ID: " + ReportID.getText());
+        System.out.println("Name (Arabic): " + NameInArabic.getText());
+        System.out.println("Name (English): " + NameInEnglish.getText());
+        // Add more fields as needed
+    }
 
     @FXML
     void initialize() {

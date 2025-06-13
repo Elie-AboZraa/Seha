@@ -27,7 +27,8 @@ public class HomePageController {
     void CreateLeave(ActionEvent event) throws IOException {
         Parent root = FXMLLoader.load(getClass().getResource("/Scene/CreateLeavePage.fxml"));
         stage = (Stage)((Node)event.getSource()).getScene().getWindow();
-        scene =new Scene(root);
+        Scene scene = new Scene(root, 1400, 900);  // Add dimensions
+        scene.getStylesheets().add(getClass().getResource("/Scene/SceneStyle/CreateLeavePage.css").toExternalForm());  // Add stylesheet
         stage.setScene(scene);
         stage.show();
     }
