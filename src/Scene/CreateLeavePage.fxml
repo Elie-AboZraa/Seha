@@ -57,7 +57,7 @@
             <Label layoutX="477.0" layoutY="549.0" text="بداية التقرير ميلادي:" />
             <Label layoutX="560.0" layoutY="629.0" text="التاريخ:" />
             <Label layoutX="751.0" layoutY="463.0" text="عدد الايام:" />
-            <Label fx:id="EndOFReportInGregorian" layoutX="879.0" layoutY="463.0" text="نهاية التقرير بالميلادي:" />
+            <Label layoutX="879.0" layoutY="463.0" text="نهاية التقرير بالميلادي:" />
             <Label layoutX="700.0" layoutY="549.0" text="نهاية التقرير هجري:" />
             <Label layoutX="1118.0" layoutY="549.0" text="تاريخ التقرير هجري:" />
             <Label layoutX="497.0" layoutY="195.0" text="الإسم بالانجليزي:" />
@@ -84,7 +84,7 @@
             <TextField fx:id="HospitalNameInEnglish" alignment="CENTER_RIGHT" layoutX="841.0" layoutY="408.0" prefHeight="30.0" prefWidth="200.0" />
             <TextField fx:id="EmployerArabic" alignment="CENTER_RIGHT" layoutX="633.0" layoutY="408.0" prefHeight="30.0" prefWidth="200.0" />
             <DatePicker fx:id="ReportDateInGregorian" layoutX="1052.0" layoutY="488.0" prefHeight="30.0" prefWidth="200.0" />
-            <DatePicker layoutX="844.0" layoutY="488.0" prefHeight="30.0" prefWidth="200.0" />
+            <DatePicker fx:id="EndOFReportInGregorian" layoutX="844.0" layoutY="488.0" prefHeight="30.0" prefWidth="200.0" />
             <TextField fx:id="NumberOfDays" alignment="CENTER_RIGHT" layoutX="633.0" layoutY="489.0" prefHeight="30.0" prefWidth="200.0" />
             <TextField fx:id="LicenseNumber" alignment="CENTER_RIGHT" layoutX="422.0" layoutY="489.0" prefHeight="30.0" prefWidth="200.0" />
             <TextField fx:id="ReportDateHijri" alignment="CENTER_RIGHT" layoutX="1054.0" layoutY="576.0" prefHeight="30.0" prefWidth="200.0" />
@@ -93,7 +93,7 @@
             <TextField fx:id="BeginningOfTheADReport" alignment="CENTER_RIGHT" layoutX="422.0" layoutY="576.0" prefHeight="30.0" prefWidth="200.0" />
             <TextField fx:id="NationalityInArabic" alignment="CENTER_RIGHT" layoutX="1063.0" layoutY="665.0" prefHeight="30.0" prefWidth="200.0" />
             <TextField fx:id="NationalityInEnglish" alignment="CENTER_RIGHT" layoutX="852.0" layoutY="664.0" prefHeight="30.0" prefWidth="200.0" />
-            <TextField fx:id="Time" alignment="CENTER_RIGHT" layoutX="639.0" layoutY="660.0" prefHeight="30.0" prefWidth="200.0" />
+            <TextField fx:id="Time" alignment="CENTER_RIGHT" layoutX="639.0" layoutY="660.0" prefHeight="30.0" prefWidth="200.0" text="09:46AM" />
             <TextField fx:id="Date" alignment="CENTER_RIGHT" layoutX="422.0" layoutY="655.0" prefHeight="30.0" prefWidth="200.0" />
             <Button fx:id="save" layoutX="455.0" layoutY="718.0" mnemonicParsing="false" onAction="#saveTheData" prefHeight="51.0" prefWidth="392.0" text="حفظ المعلومات" />
          </children></Pane>
