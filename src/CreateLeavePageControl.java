@@ -190,19 +190,6 @@ public class CreateLeavePageControl {
 
 
     /**
-     * Shows an alert dialog
-     * @param title The alert title
-     * @param message The alert message
-     */
-    private void showAlert(String title, String message) {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle(title);
-        alert.setHeaderText(null);
-        alert.setContentText(message);
-        alert.showAndWait();
-    }
-
-    /**
      * Navigates back to the home page
      * @param event The action event
      * @throws IOException If the FXML file cannot be loaded
