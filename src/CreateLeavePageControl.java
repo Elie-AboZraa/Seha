@@ -38,6 +38,7 @@ import java.io.InputStream;
 import java.nio.file.Paths;
 import java.util.Locale;
 
+
 /**
  * Controller class for the Create Leave Page in a medical leave application.
  * This class handles:
@@ -80,6 +81,9 @@ public class CreateLeavePageControl {
     @FXML private TextField BeginningOfTheADReport;
     @FXML private TextField Date;
     @FXML private TextField Time;
+    @FXML private TextField IdNumber;
+    @FXML private TextField EmployerArabic;
+    @FXML private TextField LicenseNumber;
 
     // Date formatters for different date formats
     private final DateTimeFormatter hijriFormatter = DateTimeFormatter.ofPattern("yyyy/MM/dd").withChronology(HijrahChronology.INSTANCE);
@@ -238,7 +242,40 @@ public class CreateLeavePageControl {
      */
     @FXML
     void saveTheData(ActionEvent event) {
-       
+       PdfMaker savePDF =new PdfMaker();
+       //EndOFReportInGregorian
+       LocalDate DateInGregorian = ReportDateInGregorian.getValue();
+       String DateInGregorianString = DateInGregorian.format(DateTimeFormatter.ofPattern("dd-MM-yy"));
+
+       LocalDate EndReportInGregorian = EndOFReportInGregorian.getValue();
+       String DateEndGregorianString = EndReportInGregorian.format(DateTimeFormatter.ofPattern("dd-MM-yy"));
+
+       String reportIdString = ReportID.getText();
+       String IdNumberString = IdNumber.getText();
+       String NameInArabicString = NameInArabic.getText();
+       String NameInEnglishString = NameInEnglish.getText();
+       String DoctorNameInArabichString = DoctorNameInArabic.getText();
+       String DoctorNameInEnglishString = DoctorNameInEnglish.getText();
+       String DoctorSpecialtyInArabicString = DoctorSpecialtyInArabic.getText();
+       String DoctorSpecialtyInEnglishString = DoctorSpecialtyInEnglish.getText();
+       String HospitalNameInArabicString = HospitalNameInArabic.getText();
+       String HospitalNameInEnglishString = HospitalNameInEnglish.getText();
+       String EmployerArabicString = EmployerArabic.getText();
+       String NumberOfDaysString = NumberOfDays.getText();
+       String LicenseNumberString = LicenseNumber.getText();
+       String ReportDateHijriString = ReportDateHijri.getText();
+       String StartOfTheHijriReportString = StartOfTheHijriReport.getText();
+       String EndOfHijriReportString = EndOfHijriReport.getText();
+       String BeginningOfTheADReportString = BeginningOfTheADReport.getText();
+       String NationalityInArabicString = NationalityInArabic.getText();
+       String NationalityInEnglishString = NationalityInEnglish.getText();
+       String TimeString = Time.getText();
+       String DateString = Date.getText();
+       new Thread(()->{
+               savePDF.SickLeaveF(reportIdString,IdNumberString,NameInArabicString,NameInEnglishString,DoctorNameInArabichString,DoctorNameInEnglishString,DoctorSpecialtyInArabicString,DoctorSpecialtyInEnglishString,HospitalNameInArabicString,HospitalNameInEnglishString,EmployerArabicString,DateInGregorianString,DateEndGregorianString,NumberOfDaysString,LicenseNumberString,ReportDateHijriString,StartOfTheHijriReportString,EndOfHijriReportString,BeginningOfTheADReportString,NationalityInArabicString,NationalityInEnglishString,TimeString,DateString);
+            }
+       ).start();
+    
     }
 
     /**
