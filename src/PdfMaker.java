@@ -103,7 +103,8 @@ public class PdfMaker {
 
             // 2) Arabic font from file
             PDFont font = PDType0Font.load(document, new FileInputStream(ARABIC_FONT_PATH));
-            float fontSize = 10.5f;
+            float mainFontSize = 9.5f;  // Reduced from 10.5f to 9.5f
+            float footerFontSize = 10.5f;  // Keep footer size unchanged
 
             // Build and render TextPosition list
             List<TextPosition> positions = new ArrayList<>();
@@ -119,18 +120,18 @@ public class PdfMaker {
             String durationArabic = NumberOfDays + " يوم (" + StartOfTheHijriReport + " إلى " + EndOfHijriReport + ")";
 
             // Set color to DARK_BLUE for all main content
-            cs.setFont(font, fontSize);
+            cs.setFont(font, mainFontSize);
 
             // === WHITE CONTENT: First date fields ===
             cs.setNonStrokingColor(WHITE);
             
             // English column (white)
-            renderText(cs, font, fontSize, new TextPosition(180, rowYs[1], durationEnglish, false));
-            renderText(cs, font, fontSize, new TextPosition(180, rowYs[2], DateInGregorianString, false));
+            renderText(cs, font, mainFontSize, new TextPosition(180, rowYs[1], durationEnglish, false));
+            renderText(cs, font, mainFontSize, new TextPosition(180, rowYs[2], DateInGregorianString, false));
             
             // Arabic column (white)
-            renderText(cs, font, fontSize, new TextPosition(400, rowYs[1], processArabicText(durationArabic), true));
-            renderText(cs, font, fontSize, new TextPosition(400, rowYs[2], processArabicText(StartOfTheHijriReport), true));
+            renderText(cs, font, mainFontSize, new TextPosition(400, rowYs[1], processArabicText(durationArabic), true));
+            renderText(cs, font, mainFontSize, new TextPosition(400, rowYs[2], processArabicText(StartOfTheHijriReport), true));
             
             // === DARK BLUE CONTENT: Rest of the fields ===
             cs.setNonStrokingColor(DARK_BLUE);
@@ -158,7 +159,7 @@ public class PdfMaker {
 
             // Render main content in dark blue
             for (TextPosition pos : positions) {
-                renderText(cs, font, fontSize, pos);
+                renderText(cs, font, mainFontSize, pos);
             }
 
             // === FOOTER: Time and date in black at left corner ===
@@ -168,8 +169,9 @@ public class PdfMaker {
             TextPosition timePos = new TextPosition(50, 80, Time, false);
             TextPosition datePos = new TextPosition(50, 65, Date, false);
             
-            renderText(cs, font, fontSize, timePos);
-            renderText(cs, font, fontSize, datePos);
+            // Use larger font size for footer
+            renderText(cs, font, footerFontSize, timePos);
+            renderText(cs, font, footerFontSize, datePos);
         }
     }
 
