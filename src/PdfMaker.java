@@ -5,6 +5,9 @@ import org.apache.pdfbox.pdmodel.common.PDRectangle;
 import org.apache.pdfbox.pdmodel.font.PDFont;
 import org.apache.pdfbox.pdmodel.font.PDType0Font;
 import org.apache.pdfbox.pdmodel.graphics.image.PDImageXObject;
+import com.ibm.icu.text.ArabicShaping;
+import com.ibm.icu.text.ArabicShapingException;
+import com.ibm.icu.text.Bidi;
 import javafx.application.Platform;
 import javafx.scene.control.Alert;
 
@@ -19,6 +22,11 @@ public class PdfMaker {
     // Paths on the filesystem (relative to working directory)
     private static final String ARABIC_FONT_PATH    = "Resorses/NotoIKEAArabic-Bold.ttf";
     private static final String IMAGE_TEMPLATE_PATH = "Resorses/sickLeave.jpg";
+    
+    // Define colors
+    private static final Color DARK_BLUE = new Color(0, 0, 128); // Dark blue color
+    private static final Color WHITE = new Color(255, 255, 255); // White color
+    private static final Color BLACK = new Color(0, 0, 0);       // Black color
 
     public void SickLeaveF(String ReportID, String IdNumber, String NameInArabic, String NameInEnglish,
                    String DoctorNameInArabic, String DoctorNameInEnglish, String DoctorSpecialtyInArabic,
@@ -96,10 +104,8 @@ public class PdfMaker {
             // 2) Arabic font from file
             PDFont font = PDType0Font.load(document, new FileInputStream(ARABIC_FONT_PATH));
             float fontSize = 10.5f;
-            cs.setFont(font, fontSize);
-            cs.setNonStrokingColor(Color.BLACK);
 
-            // build and render your TextPosition list (same as before)…
+            // Build and render TextPosition list
             List<TextPosition> positions = new ArrayList<>();
             float baseY = 655;
             float[] rowYs = {
@@ -107,44 +113,82 @@ public class PdfMaker {
                 baseY - 88, baseY - 110, baseY - 132, baseY - 154,
                 baseY - 176, baseY - 198, baseY - 220
             };
+            
+            // Format duration strings
             String durationEnglish = NumberOfDays + " day (" + DateInGregorianString + " to " + DateEndGregorianString + ")";
             String durationArabic = NumberOfDays + " يوم (" + StartOfTheHijriReport + " إلى " + EndOfHijriReport + ")";
 
-            // English column
-            positions.add(new TextPosition(55, rowYs[0], ReportID));
-            positions.add(new TextPosition(55, rowYs[1], durationEnglish));
-            positions.add(new TextPosition(55, rowYs[2], DateInGregorianString));
-            positions.add(new TextPosition(55, rowYs[3], DateEndGregorianString));
-            positions.add(new TextPosition(55, rowYs[4], BeginningOfTheADReport));
-            positions.add(new TextPosition(55, rowYs[5], NameInEnglish));
-            positions.add(new TextPosition(55, rowYs[6], IdNumber));
-            positions.add(new TextPosition(55, rowYs[7], NationalityInEnglish));
-            positions.add(new TextPosition(55, rowYs[8], ""));
-            positions.add(new TextPosition(55, rowYs[9], DoctorNameInEnglish));
-            positions.add(new TextPosition(55, rowYs[10], DoctorSpecialtyInEnglish));
+            // Set color to DARK_BLUE for all main content
+            cs.setFont(font, fontSize);
 
-            // Arabic column (right‑aligned)
-            positions.add(new TextPosition(345, rowYs[0], ReportID, true));
-            positions.add(new TextPosition(345, rowYs[1], durationArabic, true));
-            positions.add(new TextPosition(345, rowYs[2], StartOfTheHijriReport, true));
-            positions.add(new TextPosition(345, rowYs[3], EndOfHijriReport, true));
-            positions.add(new TextPosition(345, rowYs[4], ReportDateHijri, true));
-            positions.add(new TextPosition(345, rowYs[5], NameInArabic, true));
-            positions.add(new TextPosition(345, rowYs[6], IdNumber, true));
-            positions.add(new TextPosition(345, rowYs[7], NationalityInArabic, true));
-            positions.add(new TextPosition(345, rowYs[8], EmployerArabic, true));
-            positions.add(new TextPosition(345, rowYs[9], DoctorNameInArabic, true));
-            positions.add(new TextPosition(345, rowYs[10], DoctorSpecialtyInArabic, true));
+            // === WHITE CONTENT: First date fields ===
+            cs.setNonStrokingColor(WHITE);
+            
+            // English column (white)
+            renderText(cs, font, fontSize, new TextPosition(180, rowYs[1], durationEnglish, false));
+            renderText(cs, font, fontSize, new TextPosition(180, rowYs[2], DateInGregorianString, false));
+            
+            // Arabic column (white)
+            renderText(cs, font, fontSize, new TextPosition(400, rowYs[1], processArabicText(durationArabic), true));
+            renderText(cs, font, fontSize, new TextPosition(400, rowYs[2], processArabicText(StartOfTheHijriReport), true));
+            
+            // === DARK BLUE CONTENT: Rest of the fields ===
+            cs.setNonStrokingColor(DARK_BLUE);
+            
+            // English column (dark blue)
+            positions.add(new TextPosition(260, rowYs[0], ReportID, false));
+            positions.add(new TextPosition(180, rowYs[3], DateEndGregorianString, false));
+            positions.add(new TextPosition(180, rowYs[4], BeginningOfTheADReport, false));
+            positions.add(new TextPosition(180, rowYs[5], NameInEnglish, false));
+            positions.add(new TextPosition(180, rowYs[6], IdNumber, false));
+            positions.add(new TextPosition(180, rowYs[7], NationalityInEnglish, false));
+            positions.add(new TextPosition(180, rowYs[8], "", false));
+            positions.add(new TextPosition(180, rowYs[9], DoctorNameInEnglish, false));
+            positions.add(new TextPosition(180, rowYs[10], DoctorSpecialtyInEnglish, false));
 
-            // Footer
-            positions.add(new TextPosition(55, 135, "To check the report please visit Seha's official website"));
-            positions.add(new TextPosition(55, 120, "www.seha.sa/#/inquiries/slengujry"));
-            positions.add(new TextPosition(400, 80, Time, true));
-            positions.add(new TextPosition(400, 65, Date, true));
+            // Arabic column (dark blue)
+            positions.add(new TextPosition(400, rowYs[3], processArabicText(EndOfHijriReport), true));
+            positions.add(new TextPosition(400, rowYs[4], processArabicText(ReportDateHijri), true));
+            positions.add(new TextPosition(400, rowYs[5], processArabicText(NameInArabic), true));
+            positions.add(new TextPosition(400, rowYs[6], IdNumber, true)); // Numbers don't need processing
+            positions.add(new TextPosition(400, rowYs[7], processArabicText(NationalityInArabic), true));
+            positions.add(new TextPosition(400, rowYs[8], processArabicText(EmployerArabic), true));
+            positions.add(new TextPosition(400, rowYs[9], processArabicText(DoctorNameInArabic), true));
+            positions.add(new TextPosition(400, rowYs[10], processArabicText(DoctorSpecialtyInArabic), true));
 
+            // Render main content in dark blue
             for (TextPosition pos : positions) {
                 renderText(cs, font, fontSize, pos);
             }
+
+            // === FOOTER: Time and date in black at left corner ===
+            cs.setNonStrokingColor(BLACK);
+            
+            // Footer time/date (left-aligned)
+            TextPosition timePos = new TextPosition(50, 80, Time, false);
+            TextPosition datePos = new TextPosition(50, 65, Date, false);
+            
+            renderText(cs, font, fontSize, timePos);
+            renderText(cs, font, fontSize, datePos);
+        }
+    }
+
+    // Process Arabic text using ICU4J for proper shaping and direction
+    private String processArabicText(String text) {
+        try {
+            // Step 1: Shape Arabic letters for proper connection
+            ArabicShaping shaper = new ArabicShaping(ArabicShaping.LETTERS_SHAPE);
+            String shapedText = shaper.shape(text);
+            
+            // Step 2: Handle bidirectional text for proper RTL rendering
+            Bidi bidi = new Bidi(shapedText, Bidi.DIRECTION_RIGHT_TO_LEFT);
+            bidi.setReorderingMode(Bidi.REORDER_DEFAULT);
+            
+            // Create visual ordered string
+            return bidi.writeReordered(Bidi.DO_MIRRORING);
+        } catch (ArabicShapingException e) {
+            e.printStackTrace();
+            return text; // Return original if shaping fails
         }
     }
 
@@ -160,10 +204,15 @@ public class PdfMaker {
 
     // Helper for positioning
     private static class TextPosition {
-        float x, y; String text; boolean rightAlign;
-        TextPosition(float x, float y, String text) { this(x,y,text,false); }
+        float x, y; 
+        String text;
+        boolean rightAlign;
+        
         TextPosition(float x, float y, String text, boolean rightAlign) {
-            this.x=x; this.y=y; this.text=text; this.rightAlign=rightAlign;
+            this.x = x;
+            this.y = y;
+            this.text = text;
+            this.rightAlign = rightAlign;
         }
     }
 }

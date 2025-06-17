@@ -17,6 +17,7 @@
         "c:\\Visual Studio\\gson-2.10.1.jar",
         "c:\\Visual Studio\\commons-logging-1.2.jar",
         "c:\\Visual Studio\\fontbox-2.0.29.jar",
-        "c:\\Visual Studio\\pdfbox-2.0.29.jar"
+        "c:\\Visual Studio\\pdfbox-2.0.29.jar",
+        "c:\\Visual Studio\\icu4j-73_2.jar"
     ]
 }
