@@ -1,9 +1,8 @@
-// Replace "your.package.name" with your actual package name
+
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
-import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.util.Callback;
@@ -15,26 +14,43 @@ public class DataSaverController {
     @FXML private TableView<DataModel> dataTableView;
     @FXML private TextField searchField;
     
-    // Use the same database connection details as in DatabaseManager
     private static final String DB_URL = "jdbc:mysql://127.0.0.1:3306/medical_reports_db";
     private static final String DB_USER = "root";
     private static final String DB_PASS = "@5688120@";
+    private int totalRecords = 0;
 
     @FXML
     public void initialize() {
         setupTableColumns();
+        loadTotalRecordCount();
         loadDataFromDatabase();
     }
 
+    // First get total number of records for countdown
+    private void loadTotalRecordCount() {
+        try (Connection conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASS);
+             Statement stmt = conn.createStatement();
+             ResultSet rs = stmt.executeQuery("SELECT COUNT(*) AS total FROM reports")) {
+            
+            if (rs.next()) {
+                totalRecords = rs.getInt("total");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            showAlert("Database Error", "Failed to get record count: " + e.getMessage());
+        }
+    }
+
     private void setupTableColumns() {
-        // Create action buttons for each column
-        createButtonColumn(0, "حذف", this::handleDelete);
-        createButtonColumn(1, "تعديل", this::handleEdit);
-        createButtonColumn(2, "مرافق المريض", this::handleCompanion);
-        createButtonColumn(3, "تقرير طبي", this::handleMedical);
-        createButtonColumn(4, "اجازة", this::handleLeave);
+        // Use lambdas instead of method references to avoid compatibility issues
+        createButtonColumn(0, "حذف", data -> handleDelete(data));
+        createButtonColumn(1, "تعديل", data -> handleEdit(data));
+        createButtonColumn(2, "مرافق المريض", data -> handleCompanion(data));
+        createButtonColumn(3, "تقرير طبي", data -> handleMedical(data));
+        createButtonColumn(4, "اجازة", data -> handleLeave(data));
     }
     
+    @SuppressWarnings("unchecked") // Suppress the unchecked cast warning
     private void createButtonColumn(int columnIndex, String buttonText, Consumer<DataModel> action) {
         TableColumn<DataModel, Void> col = (TableColumn<DataModel, Void>) dataTableView.getColumns().get(columnIndex);
         col.setCellFactory(new Callback<TableColumn<DataModel, Void>, TableCell<DataModel, Void>>() {
@@ -46,19 +62,17 @@ public class DataSaverController {
                     {
                         button.getStyleClass().add("action-button");
                         button.setOnAction(event -> {
-                            DataModel data = getTableView().getItems().get(getIndex());
-                            action.accept(data);
+                            if (getTableRow() != null && getTableRow().getItem() != null) {
+                                DataModel data = getTableRow().getItem();
+                                action.accept(data);
+                            }
                         });
                     }
                     
                     @Override
                     protected void updateItem(Void item, boolean empty) {
                         super.updateItem(item, empty);
-                        if (empty) {
-                            setGraphic(null);
-                        } else {
-                            setGraphic(button);
-                        }
+                        setGraphic(empty ? null : button);
                     }
                 };
             }
@@ -67,15 +81,16 @@ public class DataSaverController {
 
     private void loadDataFromDatabase() {
         ObservableList<DataModel> data = FXCollections.observableArrayList();
-        int rowNumber = 1;
         
         try (Connection conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASS);
              Statement stmt = conn.createStatement();
-             ResultSet rs = stmt.executeQuery("SELECT report_id, name_arabic, id_number FROM reports")) {
+             ResultSet rs = stmt.executeQuery(
+                 "SELECT report_id, name_arabic, id_number FROM reports ORDER BY report_id DESC")) {
             
+            int currentCount = totalRecords;
             while (rs.next()) {
                 data.add(new DataModel(
-                    rowNumber++,
+                    currentCount--,  // Countdown ID
                     rs.getString("report_id"),
                     rs.getString("name_arabic"),
                     rs.getString("id_number")
@@ -99,18 +114,27 @@ public class DataSaverController {
         }
         
         ObservableList<DataModel> filteredData = FXCollections.observableArrayList();
-        int rowNumber = 1;
         
         try (Connection conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASS);
              PreparedStatement stmt = conn.prepareStatement(
-                 "SELECT report_id, name_arabic, id_number FROM reports WHERE LOWER(name_arabic) LIKE ?")) {
+                 "SELECT report_id, name_arabic, id_number FROM reports " +
+                 "WHERE LOWER(name_arabic) LIKE ? ORDER BY report_id DESC")) {
             
             stmt.setString(1, "%" + keyword + "%");
             ResultSet rs = stmt.executeQuery();
             
+            // Get count for search results
+            int searchCount = 0;
+            try (Statement countStmt = conn.createStatement();
+                 ResultSet countRs = countStmt.executeQuery(
+                     "SELECT COUNT(*) AS total FROM reports WHERE LOWER(name_arabic) LIKE '%" + keyword + "%'")) {
+                if (countRs.next()) searchCount = countRs.getInt("total");
+            }
+            
+            int currentCount = searchCount;
             while (rs.next()) {
                 filteredData.add(new DataModel(
-                    rowNumber++,
+                    currentCount--,  // Countdown ID for search results
                     rs.getString("report_id"),
                     rs.getString("name_arabic"),
                     rs.getString("id_number")
@@ -125,7 +149,6 @@ public class DataSaverController {
         dataTableView.setItems(filteredData);
     }
     
-    // Action handlers
     private void handleDelete(DataModel data) {
         try (Connection conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASS);
              PreparedStatement stmt = conn.prepareStatement(
@@ -136,7 +159,9 @@ public class DataSaverController {
             
             if (affectedRows > 0) {
                 showAlert("نجاح", "تم حذف السجل بنجاح");
-                loadDataFromDatabase(); // Refresh table
+                // Refresh counts and data
+                loadTotalRecordCount();
+                loadDataFromDatabase();
             }
             
         } catch (SQLException e) {
@@ -165,6 +190,7 @@ public class DataSaverController {
         System.out.println("Leave: " + data.getReportId());
     }
     
+    // ADDED THE MISSING showAlert METHOD
     private void showAlert(String title, String message) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle(title);
@@ -175,20 +201,20 @@ public class DataSaverController {
     
     // Data Model Class for the table
     public static class DataModel {
-        private final int rowNumber;
+        private final int countdownId;
         private final String reportId;
         private final String nameArabic;
         private final String idNumber;
         
-        public DataModel(int rowNumber, String reportId, String nameArabic, String idNumber) {
-            this.rowNumber = rowNumber;
+        public DataModel(int countdownId, String reportId, String nameArabic, String idNumber) {
+            this.countdownId = countdownId;
             this.reportId = reportId;
             this.nameArabic = nameArabic;
             this.idNumber = idNumber;
         }
         
         // Getters
-        public int getRowNumber() { return rowNumber; }
+        public int getCountdownId() { return countdownId; }
         public String getReportId() { return reportId; }
         public String getNameArabic() { return nameArabic; }
         public String getIdNumber() { return idNumber; }

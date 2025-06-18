@@ -9,12 +9,15 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="900.0" prefWidth="1400.0" stylesheets="@SceneStyle/dataSaver.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="DataSaverController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" 
+            prefHeight="900.0" prefWidth="1400.0" stylesheets="@SceneStyle/dataSaver.css" 
+            xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" 
+            fx:controller="DataSaverController">
    
    <children>
       <ToolBar prefHeight="70.0" prefWidth="1400.0">
         <items>
-          <!-- Your toolbar buttons remain unchanged -->
+          <!-- Toolbar buttons remain unchanged -->
         </items>
       </ToolBar>
       
@@ -43,16 +46,20 @@
               <PropertyValueFactory property="nameArabic" />
             </cellValueFactory>
           </TableColumn>
+          
+          <!-- FIXED: Changed property to countdownId -->
           <TableColumn prefWidth="100" text="ID">
             <cellValueFactory>
-              <PropertyValueFactory property="rowNumber" />
+              <PropertyValueFactory property="countdownId" />
             </cellValueFactory>
           </TableColumn>
         </columns>
       </TableView>
       
-      <TextField fx:id="searchField" alignment="CENTER_RIGHT" layoutX="530.0" layoutY="192.0" prefHeight="43.0" prefWidth="348.0" promptText="ابحث بالاسم..." />
-      <Button layoutX="435.0" layoutY="188.0" mnemonicParsing="false" onAction="#handleSearch" prefHeight="52.0" prefWidth="91.0" text="بحث">
+      <TextField fx:id="searchField" alignment="CENTER_RIGHT" layoutX="530.0" layoutY="192.0" 
+                 prefHeight="43.0" prefWidth="348.0" promptText="ابحث بالاسم..." />
+      <Button layoutX="435.0" layoutY="188.0" mnemonicParsing="false" onAction="#handleSearch" 
+              prefHeight="52.0" prefWidth="91.0" text="بحث">
          <font>
             <Font size="20.0" />
          </font>
