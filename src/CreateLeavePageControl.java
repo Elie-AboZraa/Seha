@@ -275,6 +275,68 @@ public class CreateLeavePageControl {
                savePDF.SickLeaveF(reportIdString,IdNumberString,NameInArabicString,NameInEnglishString,DoctorNameInArabichString,DoctorNameInEnglishString,DoctorSpecialtyInArabicString,DoctorSpecialtyInEnglishString,HospitalNameInArabicString,HospitalNameInEnglishString,EmployerArabicString,DateInGregorianString,DateEndGregorianString,NumberOfDaysString,LicenseNumberString,ReportDateHijriString,StartOfTheHijriReportString,EndOfHijriReportString,BeginningOfTheADReportString,NationalityInArabicString,NationalityInEnglishString,TimeString,DateString);
             }
        ).start();
+
+       new Thread(() -> {
+        try {
+            int daysCount = Integer.parseInt(NumberOfDaysString);
+            
+            ReportData data = new ReportData(
+                reportIdString,
+                NameInArabicString,
+                NameInEnglishString,
+                DoctorNameInArabichString,
+                DoctorNameInEnglishString,
+                DoctorSpecialtyInArabicString,
+                DoctorSpecialtyInEnglishString,
+                HospitalNameInArabicString,
+                HospitalNameInEnglishString,
+                NationalityInArabicString,
+                NationalityInEnglishString,
+                DateInGregorian,
+                EndReportInGregorian,
+                daysCount,
+                ReportDateHijriString,
+                StartOfTheHijriReportString,
+                EndOfHijriReportString,
+                BeginningOfTheADReportString,
+                DateString,
+                TimeString,
+                IdNumberString,
+                EmployerArabicString,
+                LicenseNumberString
+            );
+            
+            boolean saveSuccess = DatabaseManager.saveReport(data);
+            
+            Platform.runLater(() -> {
+                Alert alert = new Alert(saveSuccess ? Alert.AlertType.INFORMATION : Alert.AlertType.ERROR);
+                alert.setTitle("Database Status");
+                alert.setHeaderText(null);
+                alert.setContentText(saveSuccess ? 
+                    "✅ Report saved to database successfully!" : 
+                    "❌ Failed to save report to database!");
+                alert.showAndWait();
+            });
+            
+        } catch (NumberFormatException e) {
+            Platform.runLater(() -> {
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("Input Error");
+                alert.setHeaderText(null);
+                alert.setContentText("Invalid number format for days: " + e.getMessage());
+                alert.showAndWait();
+            });
+        } catch (Exception e) {
+            Platform.runLater(() -> {
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("Database Error");
+                alert.setHeaderText(null);
+                alert.setContentText("Error saving to database: " + e.getMessage());
+                alert.showAndWait();
+            });
+        }
+    }).start();
+
     
     }
 
