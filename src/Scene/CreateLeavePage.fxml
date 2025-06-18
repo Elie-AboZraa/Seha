@@ -34,7 +34,7 @@
                   <Font name="Noto IKEA Arabic Bold" size="20.0" />
                </font>
             </Button>
-            <Button contentDisplay="CENTER" mnemonicParsing="false" text="حفظ الاجازة">
+            <Button contentDisplay="CENTER" mnemonicParsing="false" onAction="#theDataPage" text="حفظ الاجازة">
                <font>
                   <Font name="Noto IKEA Arabic Bold" size="20.0" />
                </font>

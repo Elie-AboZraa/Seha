@@ -1,5 +1,4 @@
-package your.package.name;
-
+// Replace "your.package.name" with your actual package name
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -16,10 +15,10 @@ public class DataSaverController {
     @FXML private TableView<DataModel> dataTableView;
     @FXML private TextField searchField;
     
-    // Database connection details
-    private static final String DB_URL = "jdbc:mysql://localhost:3306/medical_reports_db";
-    private static final String DB_USER = "your_username";
-    private static final String DB_PASS = "your_password";
+    // Use the same database connection details as in DatabaseManager
+    private static final String DB_URL = "jdbc:mysql://127.0.0.1:3306/medical_reports_db";
+    private static final String DB_USER = "root";
+    private static final String DB_PASS = "@5688120@";
 
     @FXML
     public void initialize() {
@@ -38,10 +37,10 @@ public class DataSaverController {
     
     private void createButtonColumn(int columnIndex, String buttonText, Consumer<DataModel> action) {
         TableColumn<DataModel, Void> col = (TableColumn<DataModel, Void>) dataTableView.getColumns().get(columnIndex);
-        col.setCellFactory(new Callback<>() {
+        col.setCellFactory(new Callback<TableColumn<DataModel, Void>, TableCell<DataModel, Void>>() {
             @Override
             public TableCell<DataModel, Void> call(final TableColumn<DataModel, Void> param) {
-                return new TableCell<>() {
+                return new TableCell<DataModel, Void>() {
                     private final Button button = new Button(buttonText);
                     
                     {
@@ -174,7 +173,7 @@ public class DataSaverController {
         alert.showAndWait();
     }
     
-    // Data Model Class
+    // Data Model Class for the table
     public static class DataModel {
         private final int rowNumber;
         private final String reportId;

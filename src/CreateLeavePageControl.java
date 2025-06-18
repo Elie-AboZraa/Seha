@@ -340,6 +340,16 @@ public class CreateLeavePageControl {
     
     }
 
+
+    @FXML
+    void theDataPage(ActionEvent event) throws IOException {
+        Parent root = FXMLLoader.load(getClass().getResource("/Scene/dataSaver.fxml"));
+        stage = (Stage)((Node)event.getSource()).getScene().getWindow();
+        Scene scene = new Scene(root, 1400, 900);  // Add dimensions
+        stage.setScene(scene);
+        stage.show();
+    }
+
     /**
      * Initializes the controller class. This method is automatically called
      * after the FXML file has been loaded.
