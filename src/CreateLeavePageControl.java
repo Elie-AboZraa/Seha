@@ -3,6 +3,7 @@ import java.net.URI;
 import java.net.URL;
 import java.security.SecureRandom;
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.time.chrono.HijrahChronology;
 import java.time.chrono.HijrahDate;
 import java.time.format.DateTimeFormatter;
@@ -240,105 +241,117 @@ public class CreateLeavePageControl {
      * Saves the form data as a PDF document
      * @param event The action event
      */
-    @FXML
-    void saveTheData(ActionEvent event) {
-       PdfMaker savePDF =new PdfMaker();
-       //EndOFReportInGregorian
-       LocalDate DateInGregorian = ReportDateInGregorian.getValue();
-       String DateInGregorianString = DateInGregorian.format(DateTimeFormatter.ofPattern("dd-MM-yy"));
-
-       LocalDate EndReportInGregorian = EndOFReportInGregorian.getValue();
-       String DateEndGregorianString = EndReportInGregorian.format(DateTimeFormatter.ofPattern("dd-MM-yy"));
-
-       String reportIdString = ReportID.getText();
-       String IdNumberString = IdNumber.getText();
-       String NameInArabicString = NameInArabic.getText();
-       String NameInEnglishString = NameInEnglish.getText();
-       String DoctorNameInArabichString = DoctorNameInArabic.getText();
-       String DoctorNameInEnglishString = DoctorNameInEnglish.getText();
-       String DoctorSpecialtyInArabicString = DoctorSpecialtyInArabic.getText();
-       String DoctorSpecialtyInEnglishString = DoctorSpecialtyInEnglish.getText();
-       String HospitalNameInArabicString = HospitalNameInArabic.getText();
-       String HospitalNameInEnglishString = HospitalNameInEnglish.getText();
-       String EmployerArabicString = EmployerArabic.getText();
-       String NumberOfDaysString = NumberOfDays.getText();
-       String LicenseNumberString = LicenseNumber.getText();
-       String ReportDateHijriString = ReportDateHijri.getText();
-       String StartOfTheHijriReportString = StartOfTheHijriReport.getText();
-       String EndOfHijriReportString = EndOfHijriReport.getText();
-       String BeginningOfTheADReportString = BeginningOfTheADReport.getText();
-       String NationalityInArabicString = NationalityInArabic.getText();
-       String NationalityInEnglishString = NationalityInEnglish.getText();
-       String TimeString = Time.getText();
-       String DateString = Date.getText();
-       new Thread(()->{
-               savePDF.SickLeaveF(reportIdString,IdNumberString,NameInArabicString,NameInEnglishString,DoctorNameInArabichString,DoctorNameInEnglishString,DoctorSpecialtyInArabicString,DoctorSpecialtyInEnglishString,HospitalNameInArabicString,HospitalNameInEnglishString,EmployerArabicString,DateInGregorianString,DateEndGregorianString,NumberOfDaysString,LicenseNumberString,ReportDateHijriString,StartOfTheHijriReportString,EndOfHijriReportString,BeginningOfTheADReportString,NationalityInArabicString,NationalityInEnglishString,TimeString,DateString);
-            }
-       ).start();
-
-       new Thread(() -> {
+   @FXML
+void saveTheData(ActionEvent event) {
+    // Get current time
+    String currentTime = LocalTime.now().format(DateTimeFormatter.ofPattern("hh:mm a"));
+    Time.setText(currentTime);
+    
+    new Thread(() -> {
         try {
-            int daysCount = Integer.parseInt(NumberOfDaysString);
+            int daysCount = Integer.parseInt(NumberOfDays.getText());
+            
+            // Create final variables for PDF generation
+            final String dateInGregorianString = ReportDateInGregorian.getValue() != null ?
+                ReportDateInGregorian.getValue().format(DateTimeFormatter.ofPattern("dd-MM-yy")) : "";
+            
+            final String dateEndGregorianString = EndOFReportInGregorian.getValue() != null ?
+                EndOFReportInGregorian.getValue().format(DateTimeFormatter.ofPattern("dd-MM-yy")) : "";
             
             ReportData data = new ReportData(
-                reportIdString,
-                NameInArabicString,
-                NameInEnglishString,
-                DoctorNameInArabichString,
-                DoctorNameInEnglishString,
-                DoctorSpecialtyInArabicString,
-                DoctorSpecialtyInEnglishString,
-                HospitalNameInArabicString,
-                HospitalNameInEnglishString,
-                NationalityInArabicString,
-                NationalityInEnglishString,
-                DateInGregorian,
-                EndReportInGregorian,
+                ReportID.getText(),
+                NameInArabic.getText(),
+                NameInEnglish.getText(),
+                DoctorNameInArabic.getText(),
+                DoctorNameInEnglish.getText(),
+                DoctorSpecialtyInArabic.getText(),
+                DoctorSpecialtyInEnglish.getText(),
+                HospitalNameInArabic.getText(),
+                HospitalNameInEnglish.getText(),
+                NationalityInArabic.getText(),
+                NationalityInEnglish.getText(),
+                ReportDateInGregorian.getValue(),
+                EndOFReportInGregorian.getValue(),
                 daysCount,
-                ReportDateHijriString,
-                StartOfTheHijriReportString,
-                EndOfHijriReportString,
-                BeginningOfTheADReportString,
-                DateString,
-                TimeString,
-                IdNumberString,
-                EmployerArabicString,
-                LicenseNumberString
+                ReportDateHijri.getText(),
+                StartOfTheHijriReport.getText(),
+                EndOfHijriReport.getText(),
+                BeginningOfTheADReport.getText(),
+                Date.getText(),
+                currentTime,
+                IdNumber.getText(),
+                EmployerArabic.getText(),
+                LicenseNumber.getText()
             );
             
+            // Save to database
             boolean saveSuccess = DatabaseManager.saveReport(data);
             
-            Platform.runLater(() -> {
-                Alert alert = new Alert(saveSuccess ? Alert.AlertType.INFORMATION : Alert.AlertType.ERROR);
-                alert.setTitle("Database Status");
-                alert.setHeaderText(null);
-                alert.setContentText(saveSuccess ? 
-                    "✅ Report saved to database successfully!" : 
-                    "❌ Failed to save report to database!");
-                alert.showAndWait();
-            });
+            // Generate PDF if save successful
+            if (saveSuccess) {
+                PdfMaker pdfMaker = new PdfMaker();
+                pdfMaker.SickLeaveF(
+                    ReportID.getText(),
+                    IdNumber.getText(),
+                    NameInArabic.getText(),
+                    NameInEnglish.getText(),
+                    DoctorNameInArabic.getText(),
+                    DoctorNameInEnglish.getText(),
+                    DoctorSpecialtyInArabic.getText(),
+                    DoctorSpecialtyInEnglish.getText(),
+                    HospitalNameInArabic.getText(),
+                    HospitalNameInEnglish.getText(),
+                    EmployerArabic.getText(),
+                    dateInGregorianString,
+                    dateEndGregorianString,
+                    NumberOfDays.getText(),
+                    LicenseNumber.getText(),
+                    ReportDateHijri.getText(),
+                    StartOfTheHijriReport.getText(),
+                    EndOfHijriReport.getText(),
+                    BeginningOfTheADReport.getText(),
+                    NationalityInArabic.getText(),
+                    NationalityInEnglish.getText(),
+                    currentTime,
+                    Date.getText()
+                );
+                
+                Platform.runLater(() -> {
+                    Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                    alert.setTitle("نجاح");
+                    alert.setHeaderText(null);
+                    alert.setContentText("✅ تم حفظ البيانات وإنشاء ملف PDF بنجاح!");
+                    alert.showAndWait();
+                });
+            } else {
+                Platform.runLater(() -> {
+                    Alert alert = new Alert(Alert.AlertType.ERROR);
+                    alert.setTitle("خطأ في قاعدة البيانات");
+                    alert.setHeaderText(null);
+                    alert.setContentText("❌ فشل في حفظ البيانات في قاعدة البيانات!");
+                    alert.showAndWait();
+                });
+            }
             
         } catch (NumberFormatException e) {
             Platform.runLater(() -> {
                 Alert alert = new Alert(Alert.AlertType.ERROR);
-                alert.setTitle("Input Error");
+                alert.setTitle("خطأ في الإدخال");
                 alert.setHeaderText(null);
-                alert.setContentText("Invalid number format for days: " + e.getMessage());
+                alert.setContentText("تنسيق غير صحيح لعدد الأيام: " + e.getMessage());
                 alert.showAndWait();
             });
         } catch (Exception e) {
             Platform.runLater(() -> {
                 Alert alert = new Alert(Alert.AlertType.ERROR);
-                alert.setTitle("Database Error");
+                alert.setTitle("خطأ");
                 alert.setHeaderText(null);
-                alert.setContentText("Error saving to database: " + e.getMessage());
+                alert.setContentText("حدث خطأ: " + e.getMessage());
                 alert.showAndWait();
             });
         }
     }).start();
-
-    
-    }
+}
 
 
     @FXML
@@ -411,7 +424,7 @@ public class CreateLeavePageControl {
                 return;
             }
             
-            long daysBetween = ChronoUnit.DAYS.between(startDate, endDate) + 1;
+            long daysBetween = ChronoUnit.DAYS.between(startDate, endDate) + 1; 
             NumberOfDays.setText(String.valueOf(daysBetween));
         }
     }

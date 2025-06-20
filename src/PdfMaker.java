@@ -49,13 +49,27 @@ public class PdfMaker {
             File outputFile = new File(desktopPath, "Sick Leave "+ReportID+".pdf");
             document.save(outputFile);
             
-            showSuccessAlert(outputFile.getAbsolutePath());
+            Platform.runLater(() -> {
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setTitle("تم إنشاء PDF بنجاح");
+                alert.setHeaderText(null);
+                alert.setContentText("تم حفظ تقرير الإجازة المرضية في:\n" + outputFile.getAbsolutePath());
+                alert.showAndWait();
+            });
         } catch (Exception e) {
             e.printStackTrace();
-            showErrorAlert("PDF Creation Failed: " + e.getMessage() + 
-                          "\n\nMake sure these files exist:\n" +
-                          "  • " + new File(IMAGE_TEMPLATE_PATH).getAbsolutePath() + "\n" +
-                          "  • " + new File(ARABIC_FONT_PATH).getAbsolutePath());
+            Platform.runLater(() -> {
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("فشل في إنشاء PDF");
+                alert.setHeaderText("خطأ في إنشاء الملف");
+                alert.setContentText("فشل في إنشاء ملف PDF: " + e.getMessage() + 
+                                  "\n\nتأكد من وجود الملفات:\n" +
+                                  "  • " + new File(IMAGE_TEMPLATE_PATH).getAbsolutePath() + "\n" +
+                                  "  • " + new File(ARABIC_FONT_PATH).getAbsolutePath());
+                alert.setResizable(true);
+                alert.getDialogPane().setPrefSize(600, 300);
+                alert.showAndWait();
+            });
         }
     }
 

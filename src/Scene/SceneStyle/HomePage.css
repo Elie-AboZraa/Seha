@@ -12,7 +12,6 @@
 
 /* الأزرار */
 .button {
-    -fx-background-color: linear-gradient(to bottom right, #088cc3, #05b0b9);
     -fx-text-fill: white;
     -fx-font-size: 22px;
     -fx-font-weight: bold;
@@ -22,17 +21,37 @@
     -fx-padding: 10px 20px;
     -fx-border-color: #e0f4f7;
     -fx-border-radius: 15px;
+    -fx-background-color: linear-gradient(to bottom right, #088cc3, #05b0b9);
+}
+
+/* زر الحذف - لون أحمر */
+.button.delete {
+    -fx-background-color: linear-gradient(to bottom right, #e74c3c, #c0392b);
 }
 
 /* عند المرور فوق الزر */
 .button:hover {
-    -fx-background-color: linear-gradient(to bottom right, #05b0b9, #088cc3);
     -fx-scale-x: 1.03;
     -fx-scale-y: 1.03;
     -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.4), 8, 0.1, 2, 2);
 }
 
+/* عند المرور فوق الزر العادي */
+.button:hover {
+    -fx-background-color: linear-gradient(to bottom right, #05b0b9, #088cc3);
+}
+
+/* عند المرور فوق زر الحذف */
+.button.delete:hover {
+    -fx-background-color: linear-gradient(to bottom right, #c0392b, #e74c3c);
+}
+
 /* عند الضغط */
 .button:pressed {
     -fx-background-color: #066f9c;
+}
+
+/* عند الضغط على زر الحذف */
+.button.delete:pressed {
+    -fx-background-color: #a93226;
 }

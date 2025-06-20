@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" nodeOrientation="RIGHT_TO_LEFT" prefHeight="600.0" prefWidth="800.0" stylesheets="@../SceneStyle/Login.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="LoginController">
+   
+   <children>
+      <VBox alignment="CENTER" layoutX="250.0" layoutY="65.0" prefHeight="400.0" prefWidth="300.0" spacing="15.0" style="-fx-background-color: #f8fbfe; -fx-background-radius: 10px; -fx-padding: 20px;">
+         <children>
+            <ImageView fitHeight="100.0" fitWidth="100.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../../Resorses/favicon-2.png" />
+               </image>
+            </ImageView>
+            <Label text="تسجيل الدخول" textAlignment="CENTER">
+               <font>
+                  <Font name="Noto IKEA Arabic Bold" size="24.0" />
+               </font>
+            </Label>
+            
+            <GridPane hgap="10" vgap="10">
+               <children>
+                  <Label text="خادم قاعدة البيانات:" GridPane.columnIndex="0" GridPane.rowIndex="0">
+                     <font>
+                        <Font name="Noto IKEA Arabic" size="14.0" />
+                     </font>
+                  </Label>
+                  <ComboBox fx:id="dbServerComboBox" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="0" />
+                  
+                  <Label text="اسم قاعدة البيانات:" GridPane.columnIndex="0" GridPane.rowIndex="1">
+                     <font>
+                        <Font name="Noto IKEA Arabic" size="14.0" />
+                     </font>
+                  </Label>
+                  <TextField fx:id="dbNameField" prefWidth="200.0" promptText="medical_reports_db" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                  
+                  <Label text="اسم المستخدم:" GridPane.columnIndex="0" GridPane.rowIndex="2">
+                     <font>
+                        <Font name="Noto IKEA Arabic" size="14.0" />
+                     </font>
+                  </Label>
+                  <TextField fx:id="dbUserField" prefWidth="200.0" promptText="root" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                  
+                  <Label text="كلمة المرور:" GridPane.columnIndex="0" GridPane.rowIndex="3">
+                     <font>
+                        <Font name="Noto IKEA Arabic" size="14.0" />
+                     </font>
+                  </Label>
+                  <PasswordField fx:id="dbPassField" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+               </children>
+               <columnConstraints>
+                  <ColumnConstraints />
+                  <ColumnConstraints />
+               </columnConstraints>
+               <rowConstraints>
+                  <RowConstraints />
+                  <RowConstraints />
+                  <RowConstraints />
+                  <RowConstraints />
+               </rowConstraints>
+            </GridPane>
+            
+            <GridPane hgap="10" vgap="10">
+               <children>
+                  <Label text="اسم المستخدم للتطبيق:" GridPane.columnIndex="0" GridPane.rowIndex="0">
+                     <font>
+                        <Font name="Noto IKEA Arabic" size="14.0" />
+                     </font>
+                  </Label>
+                  <TextField fx:id="usernameField" prefWidth="200.0" promptText="اسم المستخدم" GridPane.columnIndex="1" GridPane.rowIndex="0" />
+                  
+                  <Label text="كلمة مرور التطبيق:" GridPane.columnIndex="0" GridPane.rowIndex="1">
+                     <font>
+                        <Font name="Noto IKEA Arabic" size="14.0" />
+                     </font>
+                  </Label>
+                  <PasswordField fx:id="passwordField" prefWidth="200.0" promptText="كلمة المرور" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+               </children>
+               <columnConstraints>
+                  <ColumnConstraints />
+                  <ColumnConstraints />
+               </columnConstraints>
+               <rowConstraints>
+                  <RowConstraints />
+                  <RowConstraints />
+               </rowConstraints>
+            </GridPane>
+            
+            <Button mnemonicParsing="false" onAction="#handleLogin" prefHeight="40.0" prefWidth="200.0" text="دخول" />
+            <Button mnemonicParsing="false" onAction="#handleCreateAccount" prefHeight="40.0" prefWidth="200.0" style="-fx-background-color: #05b0b9;" text="إنشاء حساب" />
+         </children>
+      </VBox>
+   </children>
+</AnchorPane>
