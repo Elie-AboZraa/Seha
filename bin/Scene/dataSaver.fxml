@@ -17,11 +17,11 @@
       <ToolBar layoutY="0.0" prefHeight="43.0" prefWidth="1400.0">
         <items>
           <!-- Add your 5 buttons here -->
-          <Button mnemonicParsing="false" prefWidth="150.0" text="أجازة جديدة">
+          <Button mnemonicParsing="false" onAction="#BackCreateLeave" prefWidth="150.0" text="أجازة جديدة">
                <font>
                   <Font name="Noto IKEA Arabic Bold" size="12.0" />
                </font></Button>
-          <Button mnemonicParsing="false" prefHeight="52.0" prefWidth="222.0" text="حفظ المعلومات ">
+          <Button mnemonicParsing="false" onAction="#theDataPage" prefHeight="52.0" prefWidth="222.0" text="حفظ المعلومات ">
                <font>
                   <Font name="Noto IKEA Arabic Bold" size="12.0" />
                </font></Button>
@@ -30,7 +30,7 @@
                   <Font name="Noto IKEA Arabic Bold" size="12.0" />
                </font></Button>
           <Button mnemonicParsing="false" prefWidth="150.0" text="تقرير طبي" />
-          <Button mnemonicParsing="false" prefWidth="150.0" text="القائمة" />
+          <Button mnemonicParsing="false" onAction="#BackToHomePAge" prefWidth="150.0" text="القائمة" />
         </items>
       </ToolBar>
       
