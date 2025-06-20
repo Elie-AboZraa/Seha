@@ -1,11 +1,8 @@
-
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
-import javafx.scene.control.TableCell;
-import javafx.scene.control.TableColumn;
-import javafx.util.Callback;
+import javafx.scene.control.cell.PropertyValueFactory;
 import java.sql.*;
 import java.util.function.Consumer;
 
@@ -17,64 +14,51 @@ public class DataSaverController {
     private static final String DB_URL = "jdbc:mysql://127.0.0.1:3306/medical_reports_db";
     private static final String DB_USER = "root";
     private static final String DB_PASS = "@5688120@";
-    private int totalRecords = 0;
 
     @FXML
     public void initialize() {
-        setupTableColumns();
-        loadTotalRecordCount();
+        // Set up button columns
+        setupButtonColumns();
+        
+        // Load initial data
         loadDataFromDatabase();
     }
 
-    // First get total number of records for countdown
-    private void loadTotalRecordCount() {
-        try (Connection conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASS);
-             Statement stmt = conn.createStatement();
-             ResultSet rs = stmt.executeQuery("SELECT COUNT(*) AS total FROM reports")) {
-            
-            if (rs.next()) {
-                totalRecords = rs.getInt("total");
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-            showAlert("Database Error", "Failed to get record count: " + e.getMessage());
-        }
+    private void setupButtonColumns() {
+        // Button columns indices (columns 4-8)
+        setupButtonColumn(4, "اجازة", this::handleLeave);
+        setupButtonColumn(5, "تقرير طبي", this::handleMedical);
+        setupButtonColumn(6, "مرافق المريض", this::handleCompanion);
+        setupButtonColumn(7, "تعديل", this::handleEdit);
+        setupButtonColumn(8, "حذف", this::handleDelete);
     }
 
-    private void setupTableColumns() {
-        // Use lambdas instead of method references to avoid compatibility issues
-        createButtonColumn(0, "حذف", data -> handleDelete(data));
-        createButtonColumn(1, "تعديل", data -> handleEdit(data));
-        createButtonColumn(2, "مرافق المريض", data -> handleCompanion(data));
-        createButtonColumn(3, "تقرير طبي", data -> handleMedical(data));
-        createButtonColumn(4, "اجازة", data -> handleLeave(data));
-    }
-    
-    @SuppressWarnings("unchecked") // Suppress the unchecked cast warning
-    private void createButtonColumn(int columnIndex, String buttonText, Consumer<DataModel> action) {
+    private void setupButtonColumn(int columnIndex, String buttonText, Consumer<DataModel> action) {
+        // Get the column
         TableColumn<DataModel, Void> col = (TableColumn<DataModel, Void>) dataTableView.getColumns().get(columnIndex);
-        col.setCellFactory(new Callback<TableColumn<DataModel, Void>, TableCell<DataModel, Void>>() {
+        
+        // Set cell factory
+        col.setCellFactory(param -> new TableCell<DataModel, Void>() {
+            private final Button button = new Button(buttonText);
+            
+            {
+                button.getStyleClass().add("action-button");
+                button.setOnAction(event -> {
+                    DataModel data = getTableRow().getItem();
+                    if (data != null) {
+                        action.accept(data);
+                    }
+                });
+            }
+            
             @Override
-            public TableCell<DataModel, Void> call(final TableColumn<DataModel, Void> param) {
-                return new TableCell<DataModel, Void>() {
-                    private final Button button = new Button(buttonText);
-                    
-                    {
-                        button.getStyleClass().add("action-button");
-                        button.setOnAction(event -> {
-                            if (getTableRow() != null && getTableRow().getItem() != null) {
-                                DataModel data = getTableRow().getItem();
-                                action.accept(data);
-                            }
-                        });
-                    }
-                    
-                    @Override
-                    protected void updateItem(Void item, boolean empty) {
-                        super.updateItem(item, empty);
-                        setGraphic(empty ? null : button);
-                    }
-                };
+            protected void updateItem(Void item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty || getTableRow() == null || getTableRow().getItem() == null) {
+                    setGraphic(null);
+                } else {
+                    setGraphic(button);
+                }
             }
         });
     }
@@ -85,12 +69,12 @@ public class DataSaverController {
         try (Connection conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASS);
              Statement stmt = conn.createStatement();
              ResultSet rs = stmt.executeQuery(
-                 "SELECT report_id, name_arabic, id_number FROM reports ORDER BY report_id DESC")) {
+                 "SELECT search_id, report_id, name_arabic, id_number " +
+                 "FROM reports ORDER BY search_id DESC")) {
             
-            int currentCount = totalRecords;
             while (rs.next()) {
                 data.add(new DataModel(
-                    currentCount--,  // Countdown ID
+                    rs.getInt("search_id"),
                     rs.getString("report_id"),
                     rs.getString("name_arabic"),
                     rs.getString("id_number")
@@ -99,7 +83,7 @@ public class DataSaverController {
             
         } catch (SQLException e) {
             e.printStackTrace();
-            showAlert("Database Error", "Failed to load data: " + e.getMessage());
+            showAlert("خطأ في قاعدة البيانات", "فشل تحميل البيانات: " + e.getMessage());
         }
         
         dataTableView.setItems(data);
@@ -107,34 +91,28 @@ public class DataSaverController {
 
     @FXML
     private void handleSearch() {
-        String keyword = searchField.getText().trim().toLowerCase();
+        String keyword = searchField.getText().trim();
         if (keyword.isEmpty()) {
             loadDataFromDatabase();
             return;
         }
         
         ObservableList<DataModel> filteredData = FXCollections.observableArrayList();
+        String searchTerm = "%" + keyword + "%";
         
         try (Connection conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASS);
-             PreparedStatement stmt = conn.prepareStatement(
-                 "SELECT report_id, name_arabic, id_number FROM reports " +
-                 "WHERE LOWER(name_arabic) LIKE ? ORDER BY report_id DESC")) {
+            PreparedStatement stmt = conn.prepareStatement(
+                "SELECT search_id, report_id, name_arabic, id_number " +
+                "FROM reports WHERE name_arabic LIKE ? OR CAST(search_id AS CHAR) LIKE ? " +
+                "ORDER BY search_id DESC")) {
             
-            stmt.setString(1, "%" + keyword + "%");
+            stmt.setString(1, searchTerm);
+            stmt.setString(2, searchTerm);
             ResultSet rs = stmt.executeQuery();
             
-            // Get count for search results
-            int searchCount = 0;
-            try (Statement countStmt = conn.createStatement();
-                 ResultSet countRs = countStmt.executeQuery(
-                     "SELECT COUNT(*) AS total FROM reports WHERE LOWER(name_arabic) LIKE '%" + keyword + "%'")) {
-                if (countRs.next()) searchCount = countRs.getInt("total");
-            }
-            
-            int currentCount = searchCount;
             while (rs.next()) {
                 filteredData.add(new DataModel(
-                    currentCount--,  // Countdown ID for search results
+                    rs.getInt("search_id"),
                     rs.getString("report_id"),
                     rs.getString("name_arabic"),
                     rs.getString("id_number")
@@ -143,12 +121,13 @@ public class DataSaverController {
             
         } catch (SQLException e) {
             e.printStackTrace();
-            showAlert("Database Error", "Search failed: " + e.getMessage());
+            showAlert("خطأ في البحث", "فشل البحث: " + e.getMessage());
         }
         
         dataTableView.setItems(filteredData);
     }
     
+    // Button handlers as requested
     private void handleDelete(DataModel data) {
         try (Connection conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASS);
              PreparedStatement stmt = conn.prepareStatement(
@@ -159,8 +138,6 @@ public class DataSaverController {
             
             if (affectedRows > 0) {
                 showAlert("نجاح", "تم حذف السجل بنجاح");
-                // Refresh counts and data
-                loadTotalRecordCount();
                 loadDataFromDatabase();
             }
             
@@ -171,26 +148,25 @@ public class DataSaverController {
     }
     
     private void handleEdit(DataModel data) {
-        // Implement edit functionality
         System.out.println("Edit: " + data.getReportId());
+        // Implement actual edit functionality here
     }
     
     private void handleCompanion(DataModel data) {
-        // Implement companion functionality
         System.out.println("Companion: " + data.getReportId());
+        // Implement actual companion functionality here
     }
     
     private void handleMedical(DataModel data) {
-        // Implement medical report functionality
         System.out.println("Medical: " + data.getReportId());
+        // Implement actual medical report functionality here
     }
     
     private void handleLeave(DataModel data) {
-        // Implement leave functionality
         System.out.println("Leave: " + data.getReportId());
+        // Implement actual leave functionality here
     }
     
-    // ADDED THE MISSING showAlert METHOD
     private void showAlert(String title, String message) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle(title);
@@ -199,22 +175,21 @@ public class DataSaverController {
         alert.showAndWait();
     }
     
-    // Data Model Class for the table
     public static class DataModel {
-        private final int countdownId;
+        private final int searchId;
         private final String reportId;
         private final String nameArabic;
         private final String idNumber;
         
-        public DataModel(int countdownId, String reportId, String nameArabic, String idNumber) {
-            this.countdownId = countdownId;
+        public DataModel(int searchId, String reportId, String nameArabic, String idNumber) {
+            this.searchId = searchId;
             this.reportId = reportId;
             this.nameArabic = nameArabic;
             this.idNumber = idNumber;
         }
         
-        // Getters
-        public int getCountdownId() { return countdownId; }
+        // Getters (MUST match PropertyValueFactory names)
+        public int getSearchId() { return searchId; }
         public String getReportId() { return reportId; }
         public String getNameArabic() { return nameArabic; }
         public String getIdNumber() { return idNumber; }

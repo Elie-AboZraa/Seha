@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextField?>
@@ -9,57 +10,79 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" 
-            prefHeight="900.0" prefWidth="1400.0" stylesheets="@SceneStyle/dataSaver.css" 
-            xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" 
-            fx:controller="DataSaverController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" nodeOrientation="RIGHT_TO_LEFT" prefHeight="900.0" prefWidth="1400.0" stylesheets="@SceneStyle/dataSaver.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="DataSaverController">
    
    <children>
-      <ToolBar prefHeight="70.0" prefWidth="1400.0">
+      <!-- New Toolbar with 5 buttons -->
+      <ToolBar layoutY="0.0" prefHeight="43.0" prefWidth="1400.0">
         <items>
-          <!-- Toolbar buttons remain unchanged -->
+          <!-- Add your 5 buttons here -->
+          <Button mnemonicParsing="false" prefWidth="150.0" text="أجازة جديدة">
+               <font>
+                  <Font name="Noto IKEA Arabic Bold" size="12.0" />
+               </font></Button>
+          <Button mnemonicParsing="false" prefHeight="52.0" prefWidth="222.0" text="حفظ المعلومات ">
+               <font>
+                  <Font name="Noto IKEA Arabic Bold" size="12.0" />
+               </font></Button>
+          <Button mnemonicParsing="false" prefHeight="52.0" prefWidth="203.0" text="مرافق المريض">
+               <font>
+                  <Font name="Noto IKEA Arabic Bold" size="12.0" />
+               </font></Button>
+          <Button mnemonicParsing="false" prefWidth="150.0" text="تقرير طبي" />
+          <Button mnemonicParsing="false" prefWidth="150.0" text="القائمة" />
         </items>
       </ToolBar>
       
-      <TableView fx:id="dataTableView" layoutY="270.0" prefHeight="600.0" prefWidth="1400.0">
+      <!-- Page Title Label -->
+      <Label layoutX="500.0" layoutY="87.0" prefHeight="40.0" prefWidth="400.0" text="صفحة عرض المعلومات" textAlignment="CENTER">
+         <font>
+            <Font name="Noto IKEA Arabic Bold" size="24.0" />
+         </font>
+      </Label>
+      
+      <!-- Moved TableView down -->
+      <TableView fx:id="dataTableView" layoutY="230.0" prefHeight="700.0" prefWidth="1400.0">
         <columns>
-          <!-- Action Columns -->
-          <TableColumn prefWidth="100" text="حذف" />
-          <TableColumn prefWidth="100" text="تعديل" />
-          <TableColumn prefWidth="150" text="مرافق المريض" />
-          <TableColumn prefWidth="100" text="تقرير طبي" />
-          <TableColumn prefWidth="82" text="اجازة" />
-          
           <!-- Data Columns -->
-          <TableColumn prefWidth="167" text="الرقم الوطني">
+          <TableColumn prefWidth="100" text="ID">
             <cellValueFactory>
-              <PropertyValueFactory property="idNumber" />
+              <PropertyValueFactory property="searchId" />
             </cellValueFactory>
           </TableColumn>
-          <TableColumn prefWidth="157" text="رمز الاجازة">
-            <cellValueFactory>
-              <PropertyValueFactory property="reportId" />
-            </cellValueFactory>
-          </TableColumn>
-          <TableColumn prefWidth="199" text="الاسم">
+          
+          <TableColumn prefWidth="300" text="الاسم">
             <cellValueFactory>
               <PropertyValueFactory property="nameArabic" />
             </cellValueFactory>
           </TableColumn>
           
-          <!-- FIXED: Changed property to countdownId -->
-          <TableColumn prefWidth="100" text="ID">
+          <TableColumn prefWidth="200" text="رمز الاجازة">
             <cellValueFactory>
-              <PropertyValueFactory property="countdownId" />
+              <PropertyValueFactory property="reportId" />
             </cellValueFactory>
           </TableColumn>
+          
+          <TableColumn prefWidth="200" text="الرقم الوطني">
+            <cellValueFactory>
+              <PropertyValueFactory property="idNumber" />
+            </cellValueFactory>
+          </TableColumn>
+          
+          <!-- Action Buttons -->
+          <TableColumn prefWidth="100" text="اجازة" />
+          <TableColumn prefWidth="100" text="تقرير طبي" />
+          <TableColumn prefWidth="150" text="مرافق المريض" />
+          <TableColumn prefWidth="100" text="تعديل" />
+          <TableColumn prefWidth="100" text="حذف" />
         </columns>
       </TableView>
       
-      <TextField fx:id="searchField" alignment="CENTER_RIGHT" layoutX="530.0" layoutY="192.0" 
-                 prefHeight="43.0" prefWidth="348.0" promptText="ابحث بالاسم..." />
-      <Button layoutX="435.0" layoutY="188.0" mnemonicParsing="false" onAction="#handleSearch" 
-              prefHeight="52.0" prefWidth="91.0" text="بحث">
+      <!-- Moved Search Field down -->
+      <TextField fx:id="searchField" alignment="CENTER_RIGHT" layoutX="530.0" layoutY="148.0" prefHeight="43.0" prefWidth="348.0" promptText="ابحث بالاسم أو ID..." />
+      
+      <!-- Moved Search Button down -->
+      <Button layoutX="435.0" layoutY="144.0" mnemonicParsing="false" onAction="#handleSearch" prefHeight="52.0" prefWidth="91.0" text="بحث">
          <font>
             <Font size="20.0" />
          </font>
