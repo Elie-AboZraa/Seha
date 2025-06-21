@@ -23,6 +23,7 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
@@ -38,6 +39,11 @@ import java.io.File;
 import java.io.InputStream;
 import java.nio.file.Paths;
 import java.util.Locale;
+import javafx.stage.FileChooser;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+
+import java.io.File;
 
 
 /**
@@ -85,6 +91,9 @@ public class CreateLeavePageControl {
     @FXML private TextField IdNumber;
     @FXML private TextField EmployerArabic;
     @FXML private TextField LicenseNumber;
+    @FXML private Button selectImageButton;
+    @FXML private ImageView imagePreview;
+    private File selectedImageFile;
 
     // Date formatters for different date formats
     private final DateTimeFormatter hijriFormatter = DateTimeFormatter.ofPattern("yyyy/MM/dd").withChronology(HijrahChronology.INSTANCE);
@@ -164,7 +173,18 @@ public class CreateLeavePageControl {
             Date.setText("");
         }
     }
-
+    @FXML
+    private void selectImage(ActionEvent event) {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("اختر صورة للتوقيع");
+        fileChooser.getExtensionFilters().addAll(
+            new FileChooser.ExtensionFilter("ملفات الصور", "*.png", "*.jpg", "*.jpeg")
+        );
+        selectedImageFile = fileChooser.showOpenDialog(stage);
+        if (selectedImageFile != null) {
+            imagePreview.setImage(new Image(selectedImageFile.toURI().toString()));
+        }
+    }
     /**
      * Calculates the duration between start and end dates
      * @return Formatted string with duration and date range
@@ -241,7 +261,7 @@ public class CreateLeavePageControl {
      * Saves the form data as a PDF document
      * @param event The action event
      */
-   @FXML
+  @FXML
 void saveTheData(ActionEvent event) {
     // Get current time
     String currentTime = LocalTime.now().format(DateTimeFormatter.ofPattern("hh:mm a"));
@@ -257,6 +277,9 @@ void saveTheData(ActionEvent event) {
             
             final String dateEndGregorianString = EndOFReportInGregorian.getValue() != null ?
                 EndOFReportInGregorian.getValue().format(DateTimeFormatter.ofPattern("dd-MM-yy")) : "";
+            
+            // Get the path of the selected image if any
+            String customImagePath = selectedImageFile != null ? selectedImageFile.getAbsolutePath() : null;
             
             ReportData data = new ReportData(
                 ReportID.getText(),
@@ -313,7 +336,8 @@ void saveTheData(ActionEvent event) {
                     NationalityInArabic.getText(),
                     NationalityInEnglish.getText(),
                     currentTime,
-                    Date.getText()
+                    Date.getText(),
+                    customImagePath   // Pass custom image path
                 );
                 
                 Platform.runLater(() -> {

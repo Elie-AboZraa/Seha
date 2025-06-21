@@ -34,7 +34,8 @@ public class PdfMaker {
                    String EmployerArabic, String DateInGregorianString, String DateEndGregorianString,
                    String NumberOfDays, String LicenseNumber, String ReportDateHijri,
                    String StartOfTheHijriReport, String EndOfHijriReport, String BeginningOfTheADReport,
-                   String NationalityInArabic, String NationalityInEnglish, String Time, String Date) {
+                   String NationalityInArabic, String NationalityInEnglish, String Time, String Date,
+                   String customImagePath) {
         
         try (PDDocument document = new PDDocument()) {
             createPDF(document, ReportID, IdNumber, NameInArabic, NameInEnglish, DoctorNameInArabic,
@@ -42,7 +43,7 @@ public class PdfMaker {
                     HospitalNameInArabic, HospitalNameInEnglish, EmployerArabic,
                     DateInGregorianString, DateEndGregorianString, NumberOfDays, LicenseNumber,
                     ReportDateHijri, StartOfTheHijriReport, EndOfHijriReport, BeginningOfTheADReport,
-                    NationalityInArabic, NationalityInEnglish, Time, Date);
+                    NationalityInArabic, NationalityInEnglish, Time, Date, customImagePath);
             
             // Save to desktop
             String desktopPath = System.getProperty("user.home") + File.separator + "Desktop";
@@ -73,28 +74,6 @@ public class PdfMaker {
         }
     }
 
-    private void showSuccessAlert(String filePath) {
-        Platform.runLater(() -> {
-            Alert alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.setTitle("PDF Created Successfully");
-            alert.setHeaderText(null);
-            alert.setContentText("Sick leave report saved to:\n" + filePath);
-            alert.showAndWait();
-        });
-    }
-
-    private void showErrorAlert(String message) {
-        Platform.runLater(() -> {
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setTitle("PDF Creation Failed");
-            alert.setHeaderText("Resource Loading Error");
-            alert.setContentText(message);
-            alert.setResizable(true);
-            alert.getDialogPane().setPrefSize(600, 300);
-            alert.showAndWait();
-        });
-    }
-
     private void createPDF(PDDocument document, String ReportID, String IdNumber, String NameInArabic,
                           String NameInEnglish, String DoctorNameInArabic, String DoctorNameInEnglish,
                           String DoctorSpecialtyInArabic, String DoctorSpecialtyInEnglish,
@@ -102,7 +81,7 @@ public class PdfMaker {
                           String DateInGregorianString, String DateEndGregorianString, String NumberOfDays,
                           String LicenseNumber, String ReportDateHijri, String StartOfTheHijriReport,
                           String EndOfHijriReport, String BeginningOfTheADReport, String NationalityInArabic,
-                          String NationalityInEnglish, String Time, String Date) throws Exception {
+                          String NationalityInEnglish, String Time, String Date, String customImagePath) throws Exception {
         
         PDPage page = new PDPage(PDRectangle.A4);
         document.addPage(page);
@@ -115,63 +94,105 @@ public class PdfMaker {
             PDImageXObject image = PDImageXObject.createFromFile(IMAGE_TEMPLATE_PATH, document);
             cs.drawImage(image, 0, 0, pageWidth, pageHeight);
 
-            // 2) Arabic font from file
+            // 2) Add custom image if provided - positioned above "الملك سلمان"
+            if (customImagePath != null && !customImagePath.isEmpty()) {
+                try {
+                    PDImageXObject customImage = PDImageXObject.createFromFile(customImagePath, document);
+                    float imageSize = 100; // Same size as QR code
+                    
+                    // Final position: above "الملك سلمان" text
+                    float x = pageWidth - imageSize - 120; // Move left 20 points more
+                    float y = 170; // Move up 20 points more
+                    
+                    cs.drawImage(customImage, x, y, imageSize, imageSize);
+                } catch (IOException e) {
+                    System.err.println("Error loading custom image: " + e.getMessage());
+                }
+            }
+
+            // 3) Arabic font from file
             PDFont font = PDType0Font.load(document, new FileInputStream(ARABIC_FONT_PATH));
             float mainFontSize = 9.5f;  // Reduced from 10.5f to 9.5f
             float footerFontSize = 10.5f;  // Keep footer size unchanged
 
             // Build and render TextPosition list
             List<TextPosition> positions = new ArrayList<>();
-            float baseY = 655;
-            float[] rowYs = {
-                baseY, baseY - 22, baseY - 44, baseY - 66,
-                baseY - 88, baseY - 110, baseY - 132, baseY - 154,
-                baseY - 176, baseY - 198, baseY - 220
-            };
             
-            // Format duration strings
+            // INDIVIDUAL POSITIONING FOR EACH FIELD
+            // ===== English Column =====
+            // Report ID
+            positions.add(new TextPosition(260, 655, ReportID, false));
+            
+            // Duration
             String durationEnglish = NumberOfDays + " day (" + DateInGregorianString + " to " + DateEndGregorianString + ")";
+            positions.add(new TextPosition(180, 633, durationEnglish, false));
+            
+            // Admission Date
+            positions.add(new TextPosition(180, 611, DateInGregorianString, false));
+            
+            // Discharge Date
+            positions.add(new TextPosition(180, 589, DateEndGregorianString, false));
+            
+            // Issue Date
+            positions.add(new TextPosition(180, 567, BeginningOfTheADReport, false));
+            
+            // Name (English)
+            positions.add(new TextPosition(180, 545, NameInEnglish, false));
+            
+            // ID Number
+            positions.add(new TextPosition(180, 523, IdNumber, false));
+            
+            // Nationality (English)
+            positions.add(new TextPosition(180, 501, NationalityInEnglish, false));
+            
+            // Employer (English) - empty in template
+            positions.add(new TextPosition(180, 479, "", false));
+            
+            // Doctor Name (English)
+            positions.add(new TextPosition(180, 457, DoctorNameInEnglish, false));
+            
+            // Doctor Specialty (English)
+            positions.add(new TextPosition(180, 435, DoctorSpecialtyInEnglish, false));
+            
+            // ===== Arabic Column =====
+            // Duration (Arabic)
             String durationArabic = NumberOfDays + " يوم (" + StartOfTheHijriReport + " إلى " + EndOfHijriReport + ")";
+            positions.add(new TextPosition(400, 633, processArabicText(durationArabic), true));
+            
+            // Admission Date (Arabic)
+            positions.add(new TextPosition(400, 611, processArabicText(StartOfTheHijriReport), true));
+            
+            // Discharge Date (Arabic)
+            positions.add(new TextPosition(400, 589, processArabicText(EndOfHijriReport), true));
+            
+            // Issue Date (Arabic)
+            positions.add(new TextPosition(400, 567, processArabicText(ReportDateHijri), true));
+            
+            // Name (Arabic)
+            positions.add(new TextPosition(400, 545, processArabicText(NameInArabic), true));
+            
+            // ID Number
+            positions.add(new TextPosition(400, 523, IdNumber, true));
+            
+            // Nationality (Arabic)
+            positions.add(new TextPosition(400, 501, processArabicText(NationalityInArabic), true));
+            
+            // Employer (Arabic)
+            positions.add(new TextPosition(400, 479, processArabicText(EmployerArabic), true));
+            
+            // Doctor Name (Arabic)
+            positions.add(new TextPosition(400, 457, processArabicText(DoctorNameInArabic), true));
+            
+            // Doctor Specialty (Arabic)
+            positions.add(new TextPosition(400, 435, processArabicText(DoctorSpecialtyInArabic), true));
 
-            // Set color to DARK_BLUE for all main content
-            cs.setFont(font, mainFontSize);
-
-            // === WHITE CONTENT: First date fields ===
+            // ===== WHITE TEXT FIELDS =====
             cs.setNonStrokingColor(WHITE);
-            
-            // English column (white)
-            renderText(cs, font, mainFontSize, new TextPosition(180, rowYs[1], durationEnglish, false));
-            renderText(cs, font, mainFontSize, new TextPosition(180, rowYs[2], DateInGregorianString, false));
-            
-            // Arabic column (white)
-            renderText(cs, font, mainFontSize, new TextPosition(400, rowYs[1], processArabicText(durationArabic), true));
-            renderText(cs, font, mainFontSize, new TextPosition(400, rowYs[2], processArabicText(StartOfTheHijriReport), true));
-            
-            // === DARK BLUE CONTENT: Rest of the fields ===
+            renderText(cs, font, mainFontSize, new TextPosition(180, 611, DateInGregorianString, false));
+            renderText(cs, font, mainFontSize, new TextPosition(400, 611, processArabicText(StartOfTheHijriReport), true));
+
+            // ===== DARK BLUE TEXT FIELDS =====
             cs.setNonStrokingColor(DARK_BLUE);
-            
-            // English column (dark blue)
-            positions.add(new TextPosition(260, rowYs[0], ReportID, false));
-            positions.add(new TextPosition(180, rowYs[3], DateEndGregorianString, false));
-            positions.add(new TextPosition(180, rowYs[4], BeginningOfTheADReport, false));
-            positions.add(new TextPosition(180, rowYs[5], NameInEnglish, false));
-            positions.add(new TextPosition(180, rowYs[6], IdNumber, false));
-            positions.add(new TextPosition(180, rowYs[7], NationalityInEnglish, false));
-            positions.add(new TextPosition(180, rowYs[8], "", false));
-            positions.add(new TextPosition(180, rowYs[9], DoctorNameInEnglish, false));
-            positions.add(new TextPosition(180, rowYs[10], DoctorSpecialtyInEnglish, false));
-
-            // Arabic column (dark blue)
-            positions.add(new TextPosition(400, rowYs[3], processArabicText(EndOfHijriReport), true));
-            positions.add(new TextPosition(400, rowYs[4], processArabicText(ReportDateHijri), true));
-            positions.add(new TextPosition(400, rowYs[5], processArabicText(NameInArabic), true));
-            positions.add(new TextPosition(400, rowYs[6], IdNumber, true)); // Numbers don't need processing
-            positions.add(new TextPosition(400, rowYs[7], processArabicText(NationalityInArabic), true));
-            positions.add(new TextPosition(400, rowYs[8], processArabicText(EmployerArabic), true));
-            positions.add(new TextPosition(400, rowYs[9], processArabicText(DoctorNameInArabic), true));
-            positions.add(new TextPosition(400, rowYs[10], processArabicText(DoctorSpecialtyInArabic), true));
-
-            // Render main content in dark blue
             for (TextPosition pos : positions) {
                 renderText(cs, font, mainFontSize, pos);
             }
@@ -179,9 +200,9 @@ public class PdfMaker {
             // === FOOTER: Time and date in black at left corner ===
             cs.setNonStrokingColor(BLACK);
             
-            // Footer time/date (left-aligned)
-            TextPosition timePos = new TextPosition(50, 80, Time, false);
-            TextPosition datePos = new TextPosition(50, 65, Date, false);
+            // Final position: very bottom of page
+            TextPosition timePos = new TextPosition(50, 20, Time, false); 
+            TextPosition datePos = new TextPosition(50, 5, Date, false); 
             
             // Use larger font size for footer
             renderText(cs, font, footerFontSize, timePos);
