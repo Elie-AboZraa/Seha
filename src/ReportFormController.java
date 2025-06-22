@@ -1,10 +1,18 @@
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.stage.FileChooser;
+import javafx.stage.Stage;
+
 import java.io.File;
+import java.io.IOException;
 import java.net.URL;
 import java.sql.Date;
 import java.time.LocalDate;
@@ -120,6 +128,14 @@ public class ReportFormController implements Initializable {
         if (selectedImageFile != null) {
             imagePreview.setImage(new Image(selectedImageFile.toURI().toString()));
         }
+    }
+     @FXML
+    void theDataPage(ActionEvent event) throws IOException {
+        Parent root = FXMLLoader.load(getClass().getResource("/Scene/dataSaver.fxml"));
+        Stage stage = (Stage)((Node)event.getSource()).getScene().getWindow();
+        Scene scene = new Scene(root, 1400, 900);  // Add dimensions
+        stage.setScene(scene);
+        stage.show();
     }
     
     private void savePdf() {
