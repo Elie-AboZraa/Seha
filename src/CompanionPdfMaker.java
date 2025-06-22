@@ -120,11 +120,11 @@ public class CompanionPdfMaker {
             positions.add(new TextPosition(260, 655, ReportID, false));
             positions.add(new TextPosition(180, 595, BeginningOfTheADReport, false));
             positions.add(new TextPosition(180, 565, DateEndGregorianString, false));
-            positions.add(new TextPosition(280, 533, BeginningOfTheADReport, false));
+            positions.add(new TextPosition(280, 535, BeginningOfTheADReport, false));
             positions.add(new TextPosition(180, 508, NameInEnglish, false));
             positions.add(new TextPosition(300, 477, IdNumber, false));
             positions.add(new TextPosition(180, 440, NationalityInEnglish, false));
-            positions.add(new TextPosition(180, 408, kinshipEnglish, false));
+            positions.add(new TextPosition(180, 435, kinshipEnglish, false));
             positions.add(new TextPosition(180, 370, DoctorNameInEnglish, false));
             positions.add(new TextPosition(180, 330, DoctorSpecialtyInEnglish, false));
             
@@ -132,10 +132,9 @@ public class CompanionPdfMaker {
             positions.add(new TextPosition(400, 565, processArabicText(EndOfHijriReport), true));
             positions.add(new TextPosition(400, 508, processArabicText(NameInArabic), true));
             positions.add(new TextPosition(400, 440, processArabicText(NationalityInArabic), true));
-            positions.add(new TextPosition(400, 408, processArabicText(kinshipArabic), true));
+            positions.add(new TextPosition(400, 435, processArabicText(kinshipArabic), true));
             positions.add(new TextPosition(400, 370, processArabicText(DoctorNameInArabic), true));
             positions.add(new TextPosition(400, 330, processArabicText(DoctorSpecialtyInArabic), true));
-
             cs.setNonStrokingColor(WHITE);
             renderText(cs, font, mainFontSize, new TextPosition(180, 611, "", false));
             renderText(cs, font, mainFontSize, new TextPosition(400, 611, "", true));
