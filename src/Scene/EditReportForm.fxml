@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<VBox spacing="10" xmlns="http://javafx.com/javafx/17" 
+      xmlns:fx="http://javafx.com/fxml/1" 
+      fx:controller="EditReportFormController"
+      style="-fx-padding: 20; -fx-background-color: #f0f5fa;">
+    
+    <Label text="نموذج تعديل التقرير" style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #044e7c;">
+        <font>
+            <Font name="Noto IKEA Arabic Bold" size="24.0" />
+        </font>
+    </Label>
+    
+    <ScrollPane fitToWidth="true" style="-fx-background: #f8fbfe; -fx-border-color: #d6e7f0;">
+        <GridPane hgap="10" vgap="10" style="-fx-padding: 20;">
+            <columnConstraints>
+                <ColumnConstraints percentWidth="40" halignment="RIGHT"/>
+                <ColumnConstraints percentWidth="60"/>
+            </columnConstraints>
+            
+            <!-- Basic Information -->
+            <Label text="رقم البحث:" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
+            <TextField fx:id="searchIdField" editable="false" GridPane.columnIndex="1" GridPane.rowIndex="0"/>
+            
+            <Label text="رقم التقرير:" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
+            <TextField fx:id="reportIdField" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+            
+            <Label text="الاسم بالعربية:" GridPane.columnIndex="0" GridPane.rowIndex="2"/>
+            <TextField fx:id="nameArabicField" GridPane.columnIndex="1" GridPane.rowIndex="2"/>
+            
+            <Label text="الاسم بالإنجليزية:" GridPane.columnIndex="0" GridPane.rowIndex="3"/>
+            <TextField fx:id="nameEnglishField" GridPane.columnIndex="1" GridPane.rowIndex="3"/>
+            
+            <Label text="رقم الهوية:" GridPane.columnIndex="0" GridPane.rowIndex="4"/>
+            <TextField fx:id="idNumberField" GridPane.columnIndex="1" GridPane.rowIndex="4"/>
+            
+            <!-- Doctor Information -->
+            <Label text="اسم الطبيب (عربي):" GridPane.columnIndex="0" GridPane.rowIndex="5"/>
+            <TextField fx:id="doctorArabicField" GridPane.columnIndex="1" GridPane.rowIndex="5"/>
+            
+            <Label text="اسم الطبيب (إنجليزي):" GridPane.columnIndex="0" GridPane.rowIndex="6"/>
+            <TextField fx:id="doctorEnglishField" GridPane.columnIndex="1" GridPane.rowIndex="6"/>
+            
+            <Label text="اختصاص الطبيب (عربي):" GridPane.columnIndex="0" GridPane.rowIndex="7"/>
+            <TextField fx:id="specialtyArabicField" GridPane.columnIndex="1" GridPane.rowIndex="7"/>
+            
+            <Label text="اختصاص الطبيب (إنجليزي):" GridPane.columnIndex="0" GridPane.rowIndex="8"/>
+            <TextField fx:id="specialtyEnglishField" GridPane.columnIndex="1" GridPane.rowIndex="8"/>
+            
+            <!-- Hospital Information -->
+            <Label text="اسم المستشفى (عربي):" GridPane.columnIndex="0" GridPane.rowIndex="9"/>
+            <TextField fx:id="hospitalArabicField" GridPane.columnIndex="1" GridPane.rowIndex="9"/>
+            
+            <Label text="اسم المستشفى (إنجليزي):" GridPane.columnIndex="0" GridPane.rowIndex="10"/>
+            <TextField fx:id="hospitalEnglishField" GridPane.columnIndex="1" GridPane.rowIndex="10"/>
+            
+            <Label text="جهة العمل (عربي):" GridPane.columnIndex="0" GridPane.rowIndex="11"/>
+            <TextField fx:id="employerArabicField" GridPane.columnIndex="1" GridPane.rowIndex="11"/>
+            
+            <Label text="رقم الترخيص:" GridPane.columnIndex="0" GridPane.rowIndex="12"/>
+            <TextField fx:id="licenseNumberField" GridPane.columnIndex="1" GridPane.rowIndex="12"/>
+            
+            <!-- Nationality -->
+            <Label text="الجنسية (عربي):" GridPane.columnIndex="0" GridPane.rowIndex="13"/>
+            <TextField fx:id="nationalityArabicField" GridPane.columnIndex="1" GridPane.rowIndex="13"/>
+            
+            <Label text="الجنسية (إنجليزي):" GridPane.columnIndex="0" GridPane.rowIndex="14"/>
+            <TextField fx:id="nationalityEnglishField" GridPane.columnIndex="1" GridPane.rowIndex="14"/>
+            
+            <!-- Kinship (for companion reports) -->
+            <Label text="صلة القرابة (عربي):" GridPane.columnIndex="0" GridPane.rowIndex="15"/>
+            <TextField fx:id="kinshipArabicField" GridPane.columnIndex="1" GridPane.rowIndex="15"/>
+            
+            <Label text="صلة القرابة (إنجليزي):" GridPane.columnIndex="0" GridPane.rowIndex="16"/>
+            <TextField fx:id="kinshipEnglishField" GridPane.columnIndex="1" GridPane.rowIndex="16"/>
+            
+            <!-- Dates -->
+            <Label text="تاريخ التقرير (ميلادي):" GridPane.columnIndex="0" GridPane.rowIndex="17"/>
+            <DatePicker fx:id="reportDateGregorianField" GridPane.columnIndex="1" GridPane.rowIndex="17"/>
+            
+            <Label text="نهاية التقرير (ميلادي):" GridPane.columnIndex="0" GridPane.rowIndex="18"/>
+            <DatePicker fx:id="endDateGregorianField" GridPane.columnIndex="1" GridPane.rowIndex="18"/>
+            
+            <Label text="عدد الأيام:" GridPane.columnIndex="0" GridPane.rowIndex="19"/>
+            <TextField fx:id="daysCountField" GridPane.columnIndex="1" GridPane.rowIndex="19"/>
+            
+            <Label text="تاريخ التقرير (هجري):" GridPane.columnIndex="0" GridPane.rowIndex="20"/>
+            <TextField fx:id="reportDateHijriField" GridPane.columnIndex="1" GridPane.rowIndex="20"/>
+            
+            <Label text="بداية التقرير (هجري):" GridPane.columnIndex="0" GridPane.rowIndex="21"/>
+            <TextField fx:id="startHijriField" GridPane.columnIndex="1" GridPane.rowIndex="21"/>
+            
+            <Label text="نهاية التقرير (هجري):" GridPane.columnIndex="0" GridPane.rowIndex="22"/>
+            <TextField fx:id="endHijriField" GridPane.columnIndex="1" GridPane.rowIndex="22"/>
+            
+            <Label text="بداية التقرير (ميلادي):" GridPane.columnIndex="0" GridPane.rowIndex="23"/>
+            <TextField fx:id="beginAdField" GridPane.columnIndex="1" GridPane.rowIndex="23"/>
+            
+            <Label text="التاريخ (نص):" GridPane.columnIndex="0" GridPane.rowIndex="24"/>
+            <TextField fx:id="dateStringField" GridPane.columnIndex="1" GridPane.rowIndex="24"/>
+            
+            <Label text="الوقت:" GridPane.columnIndex="0" GridPane.rowIndex="25"/>
+            <TextField fx:id="timeStringField" GridPane.columnIndex="1" GridPane.rowIndex="25"/>
+        </GridPane>
+    </ScrollPane>
+    
+    <HBox spacing="10" alignment="CENTER_RIGHT" style="-fx-padding: 10 0 0 0;">
+        <Button fx:id="saveButton" text="حفظ التغييرات" 
+                style="-fx-background-color: #088cc3; -fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 16px; -fx-padding: 8 20;"/>
+        <Button text="إلغاء" onAction="#closeWindow" 
+                style="-fx-background-color: #e74c3c; -fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 16px; -fx-padding: 8 20;"/>
+    </HBox>
+</VBox>

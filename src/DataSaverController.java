@@ -11,6 +11,8 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
 import java.io.IOException;
 import java.sql.*;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.function.Consumer;
 
 public class DataSaverController {
@@ -20,23 +22,53 @@ public class DataSaverController {
     
     @FXML
     public void initialize() {
-        setupButtonColumns();
+        setupTableColumns();
         loadDataFromDatabase();
     }
     
-    @SuppressWarnings("unchecked")
-    private void setupButtonColumns() {
-        setupButtonColumn(4, "اجازة", this::handleLeave);
-        setupButtonColumn(5, "تقرير طبي", this::handleMedical);
-        setupButtonColumn(6, "مرافق المريض", this::handleCompanion);
-        setupButtonColumn(7, "تعديل", this::handleEdit);
-        setupButtonColumn(8, "حذف", this::handleDelete);
+    private void setupTableColumns() {
+        // ID Column
+        TableColumn<DataModel, Integer> idCol = new TableColumn<>("ID");
+        idCol.setCellValueFactory(new PropertyValueFactory<>("searchId"));
+        idCol.setPrefWidth(100);
+        
+        // Name Column
+        TableColumn<DataModel, String> nameCol = new TableColumn<>("الاسم");
+        nameCol.setCellValueFactory(new PropertyValueFactory<>("nameArabic"));
+        nameCol.setPrefWidth(300);
+        
+        // Report ID Column
+        TableColumn<DataModel, String> reportIdCol = new TableColumn<>("رمز الاجازة");
+        reportIdCol.setCellValueFactory(new PropertyValueFactory<>("reportId"));
+        reportIdCol.setPrefWidth(200);
+        
+        // ID Number Column
+        TableColumn<DataModel, String> idNumberCol = new TableColumn<>("الرقم الوطني");
+        idNumberCol.setCellValueFactory(new PropertyValueFactory<>("idNumber"));
+        idNumberCol.setPrefWidth(200);
+        
+        // Action Buttons
+        TableColumn<DataModel, Void> leaveCol = new TableColumn<>("اجازة");
+        TableColumn<DataModel, Void> medicalCol = new TableColumn<>("تقرير طبي");
+        TableColumn<DataModel, Void> companionCol = new TableColumn<>("مرافق المريض");
+        TableColumn<DataModel, Void> editCol = new TableColumn<>("تعديل");
+        TableColumn<DataModel, Void> deleteCol = new TableColumn<>("حذف");
+        
+        setupButtonColumn(leaveCol, "اجازة", this::handleLeave);
+        setupButtonColumn(medicalCol, "تقرير طبي", this::handleMedical);
+        setupButtonColumn(companionCol, "مرافق المريض", this::handleCompanion);
+        setupButtonColumn(editCol, "تعديل", this::handleEdit);
+        setupButtonColumn(deleteCol, "حذف", this::handleDelete);
+        
+        // Add all columns to table
+        dataTableView.getColumns().addAll(
+            idCol, nameCol, reportIdCol, idNumberCol, 
+            leaveCol, medicalCol, companionCol, editCol, deleteCol
+        );
     }
 
-    private void setupButtonColumn(int columnIndex, String buttonText, Consumer<DataModel> action) {
-        // Suppress warnings for this cast
-        @SuppressWarnings("unchecked")
-        TableColumn<DataModel, Void> col = (TableColumn<DataModel, Void>) dataTableView.getColumns().get(columnIndex);
+    private void setupButtonColumn(TableColumn<DataModel, Void> col, String buttonText, 
+                                  Consumer<DataModel> action) {
         col.setCellFactory(param -> new TableCell<DataModel, Void>() {
             private final Button button = new Button(buttonText);
             {
@@ -79,7 +111,7 @@ public class DataSaverController {
             dataTableView.setItems(data);
             
         } catch (SQLException e) {
-            showAlert("Database Error", "Failed to load data: " + e.getMessage());
+            showAlert("خطأ في قاعدة البيانات", "فشل في تحميل البيانات: " + e.getMessage());
         }
     }
 
@@ -118,7 +150,7 @@ public class DataSaverController {
             dataTableView.setItems(filteredData);
             
         } catch (SQLException e) {
-            showAlert("Search Error", "Search failed: " + e.getMessage());
+            showAlert("خطأ في البحث", "فشل في البحث: " + e.getMessage());
         }
     }
     
@@ -133,28 +165,99 @@ public class DataSaverController {
             stmt.setInt(2, currentUserId);
             
             if (stmt.executeUpdate() > 0) {
-                showAlert("Success", "Record deleted successfully");
+                showAlert("نجاح", "تم حذف السجل بنجاح");
                 loadDataFromDatabase();
             }
         } catch (SQLException e) {
-            showAlert("Error", "Delete failed: " + e.getMessage());
+            showAlert("خطأ", "فشل في الحذف: " + e.getMessage());
         }
     }
     
     private void handleEdit(DataModel data) {
-        System.out.println("Edit: " + data.getReportId());
-    }
-    
-    private void handleCompanion(DataModel data) {
-        System.out.println("Companion: " + data.getReportId());
-    }
-    
-    private void handleMedical(DataModel data) {
-        System.out.println("Medical: " + data.getReportId());
+        try {
+            // Load the edit form
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/Scene/EditReportForm.fxml"));
+            Parent root = loader.load();
+            
+            // Pass the search ID to the edit controller
+            EditReportFormController controller = loader.getController();
+            controller.setSearchId(data.getSearchId());
+            
+            Stage stage = new Stage();
+            stage.setScene(new Scene(root));
+            stage.setTitle("تعديل التقرير");
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+            showAlert("خطأ", "فشل في فتح نموذج التعديل: " + e.getMessage());
+        }
     }
     
     private void handleLeave(DataModel data) {
-        System.out.println("Leave: " + data.getReportId());
+        try {
+            Map<String, Object> reportData = loadFullReport(data.getSearchId());
+            openReportForm(reportData, "leave");
+        } catch (SQLException | IOException e) {
+            e.printStackTrace();
+            showAlert("خطأ", "فشل في تحميل نموذج الإجازة: " + e.getMessage());
+        }
+    }
+    
+    private void handleCompanion(DataModel data) {
+        try {
+            Map<String, Object> reportData = loadFullReport(data.getSearchId());
+            openReportForm(reportData, "companion");
+        } catch (SQLException | IOException e) {
+            e.printStackTrace();
+            showAlert("خطأ", "فشل في تحميل نموذج المرافق: " + e.getMessage());
+        }
+    }
+    
+    private void handleMedical(DataModel data) {
+        showAlert("تقرير طبي", "تقرير طبي لـ: " + data.getNameArabic());
+    }
+    
+    private void openReportForm(Map<String, Object> reportData, String mode) throws IOException {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/Scene/ReportForm.fxml"));
+        Parent root = loader.load();
+        
+        ReportFormController controller = loader.getController();
+        controller.setMode(mode);
+        controller.populateForm(reportData);
+        
+        Stage stage = (Stage) dataTableView.getScene().getWindow();
+        stage.setScene(new Scene(root, 1400, 900));
+        stage.show();
+    }
+    
+    private Map<String, Object> loadFullReport(int searchId) throws SQLException {
+        Map<String, Object> reportData = new HashMap<>();
+        try (Connection conn = getConnection();
+             PreparedStatement stmt = conn.prepareStatement(
+                 "SELECT * FROM reports WHERE id = ?")) {
+            
+            stmt.setInt(1, searchId);
+            ResultSet rs = stmt.executeQuery();
+            
+            if (rs.next()) {
+                ResultSetMetaData metaData = rs.getMetaData();
+                int columnCount = metaData.getColumnCount();
+                
+                for (int i = 1; i <= columnCount; i++) {
+                    String columnName = metaData.getColumnName(i);
+                    
+                    // Special handling for date fields
+                    if (columnName.equals("date_gregorian") || 
+                        columnName.equals("end_date_gregorian")) {
+                        java.sql.Date dateValue = rs.getDate(i);
+                        reportData.put(columnName, dateValue);
+                    } else {
+                        reportData.put(columnName, rs.getObject(i));
+                    }
+                }
+            }
+        }
+        return reportData;
     }
 
     private Connection getConnection() throws SQLException {
@@ -167,7 +270,11 @@ public class DataSaverController {
     }
 
     private void showAlert(String title, String message) {
-        new Alert(Alert.AlertType.INFORMATION, message, ButtonType.OK).showAndWait();
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
     }
     
     @FXML
@@ -198,6 +305,7 @@ public class DataSaverController {
         stage.setScene(scene);
         stage.show();
     }
+    
     @FXML
     void PatientCompanion(ActionEvent event) throws IOException {
         Parent root = FXMLLoader.load(getClass().getResource("/Scene/PatientCompanion.fxml"));

@@ -39,9 +39,12 @@ import java.io.File;
 import java.io.InputStream;
 import java.nio.file.Paths;
 import java.util.Locale;
+import java.util.Map;
+
 import javafx.stage.FileChooser;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import java.sql.Date;
 
 /**
  * Controller class for the Patient Companion Page in a medical application.
@@ -217,6 +220,7 @@ public class PatientCompanionControl {
         stage.setScene(scene);
         stage.show();
     }
+
 
     /**
      * Generates a random report ID
