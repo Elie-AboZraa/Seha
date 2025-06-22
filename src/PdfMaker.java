@@ -131,25 +131,26 @@ public class PdfMaker {
             positions.add(new TextPosition(260, 655, ReportID, false));
             
             // Admission Date - REMOVED FROM LIST (will be drawn separately)
-            positions.add(new TextPosition(180, 589, DateEndGregorianString, false));
-            positions.add(new TextPosition(180, 567, BeginningOfTheADReport, false));
-            positions.add(new TextPosition(180, 545, NameInEnglish, false));
-            positions.add(new TextPosition(180, 523, IdNumber, false));
-            positions.add(new TextPosition(180, 501, NationalityInEnglish, false));
-            positions.add(new TextPosition(180, 479, "", false));
-            positions.add(new TextPosition(180, 457, DoctorNameInEnglish, false));
-            positions.add(new TextPosition(180, 435, DoctorSpecialtyInEnglish, false));
+            positions.add(new TextPosition(180, 590, BeginningOfTheADReport, false));//588
+            positions.add(new TextPosition(180, 565, DateEndGregorianString, false));//565
+            positions.add(new TextPosition(280, 533, BeginningOfTheADReport, false));
+            positions.add(new TextPosition(180, 508, NameInEnglish, false));
+            positions.add(new TextPosition(300, 477, IdNumber, false));
+            positions.add(new TextPosition(180, 440, NationalityInEnglish, false));
+            positions.add(new TextPosition(180, 408, "", false));
+            positions.add(new TextPosition(180, 370, DoctorNameInEnglish, false));
+            positions.add(new TextPosition(180, 330, DoctorSpecialtyInEnglish, false));
             
             // ===== Arabic Column =====
             // Admission Date - REMOVED FROM LIST (will be drawn separately)
-            positions.add(new TextPosition(400, 589, processArabicText(EndOfHijriReport), true));
-            positions.add(new TextPosition(400, 567, processArabicText(ReportDateHijri), true));
-            positions.add(new TextPosition(400, 545, processArabicText(NameInArabic), true));
-            positions.add(new TextPosition(400, 523, IdNumber, true));
-            positions.add(new TextPosition(400, 501, processArabicText(NationalityInArabic), true));
-            positions.add(new TextPosition(400, 479, processArabicText(EmployerArabic), true));
-            positions.add(new TextPosition(400, 457, processArabicText(DoctorNameInArabic), true));
-            positions.add(new TextPosition(400, 435, processArabicText(DoctorSpecialtyInArabic), true));
+            positions.add(new TextPosition(400, 590, processArabicText(ReportDateHijri), true));//588
+            positions.add(new TextPosition(400, 565, processArabicText(EndOfHijriReport), true));//565
+            positions.add(new TextPosition(400, 508, processArabicText(NameInArabic), true));
+            //positions.add(new TextPosition(400, 523, IdNumber, true));
+            positions.add(new TextPosition(400, 440, processArabicText(NationalityInArabic), true));
+            positions.add(new TextPosition(400, 408, processArabicText(EmployerArabic), true));
+            positions.add(new TextPosition(400, 370, processArabicText(DoctorNameInArabic), true));
+            positions.add(new TextPosition(400, 330, processArabicText(DoctorSpecialtyInArabic), true));
 
             // ===== WHITE TEXT FIELDS =====
             cs.setNonStrokingColor(WHITE);
@@ -159,10 +160,10 @@ public class PdfMaker {
             
             // Render Duration Strings in WHITE
             String durationEnglish = NumberOfDays + " day (" + DateInGregorianString + " to " + DateEndGregorianString + ")";
-            renderText(cs, font, mainFontSize, new TextPosition(180, 633, durationEnglish, false));
+            renderText(cs, font, mainFontSize, new TextPosition(158, 633, durationEnglish, false));
             
             String durationArabic = NumberOfDays + " يوم (" + StartOfTheHijriReport + " إلى " + EndOfHijriReport + ")";
-            renderText(cs, font, mainFontSize, new TextPosition(400, 633, processArabicText(durationArabic), true));
+            renderText(cs, font, mainFontSize, new TextPosition(430, 633, processArabicText(durationArabic), true));
 
             // ===== DARK BLUE TEXT FIELDS =====
             cs.setNonStrokingColor(DARK_BLUE);
