@@ -14,7 +14,6 @@ import javafx.scene.control.Alert;
 import java.awt.Color;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -131,10 +130,7 @@ public class PdfMaker {
             // ===== English Column =====
             positions.add(new TextPosition(260, 655, ReportID, false));
             
-            String durationEnglish = NumberOfDays + " day (" + DateInGregorianString + " to " + DateEndGregorianString + ")";
-            positions.add(new TextPosition(180, 633, durationEnglish, false));
-            
-            positions.add(new TextPosition(180, 611, DateInGregorianString, false));
+            // Admission Date - REMOVED FROM LIST (will be drawn separately)
             positions.add(new TextPosition(180, 589, DateEndGregorianString, false));
             positions.add(new TextPosition(180, 567, BeginningOfTheADReport, false));
             positions.add(new TextPosition(180, 545, NameInEnglish, false));
@@ -145,9 +141,7 @@ public class PdfMaker {
             positions.add(new TextPosition(180, 435, DoctorSpecialtyInEnglish, false));
             
             // ===== Arabic Column =====
-            String durationArabic = NumberOfDays + " يوم (" + StartOfTheHijriReport + " إلى " + EndOfHijriReport + ")";
-            positions.add(new TextPosition(400, 633, processArabicText(durationArabic), true));
-            positions.add(new TextPosition(400, 611, processArabicText(StartOfTheHijriReport), true));
+            // Admission Date - REMOVED FROM LIST (will be drawn separately)
             positions.add(new TextPosition(400, 589, processArabicText(EndOfHijriReport), true));
             positions.add(new TextPosition(400, 567, processArabicText(ReportDateHijri), true));
             positions.add(new TextPosition(400, 545, processArabicText(NameInArabic), true));
@@ -159,8 +153,16 @@ public class PdfMaker {
 
             // ===== WHITE TEXT FIELDS =====
             cs.setNonStrokingColor(WHITE);
+            // Render Admission Dates
             renderText(cs, font, mainFontSize, new TextPosition(180, 611, DateInGregorianString, false));
             renderText(cs, font, mainFontSize, new TextPosition(400, 611, processArabicText(StartOfTheHijriReport), true));
+            
+            // Render Duration Strings in WHITE
+            String durationEnglish = NumberOfDays + " day (" + DateInGregorianString + " to " + DateEndGregorianString + ")";
+            renderText(cs, font, mainFontSize, new TextPosition(180, 633, durationEnglish, false));
+            
+            String durationArabic = NumberOfDays + " يوم (" + StartOfTheHijriReport + " إلى " + EndOfHijriReport + ")";
+            renderText(cs, font, mainFontSize, new TextPosition(400, 633, processArabicText(durationArabic), true));
 
             // ===== DARK BLUE TEXT FIELDS =====
             cs.setNonStrokingColor(DARK_BLUE);
