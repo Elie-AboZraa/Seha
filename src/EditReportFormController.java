@@ -1,3 +1,4 @@
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Alert;
@@ -5,6 +6,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
+
 import java.net.URL;
 import java.sql.*;
 import java.time.LocalDate;
@@ -12,7 +14,6 @@ import java.util.ResourceBundle;
 
 public class EditReportFormController implements Initializable {
 
-    // Form fields
     @FXML private TextField searchIdField;
     @FXML private TextField reportIdField;
     @FXML private TextField nameArabicField;
@@ -48,23 +49,22 @@ public class EditReportFormController implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         saveButton.setOnAction(e -> saveChanges());
     }
-    
+
     public void setSearchId(int searchId) {
         this.searchId = searchId;
         searchIdField.setText(String.valueOf(searchId));
         loadReportData();
     }
-    
+
     private void loadReportData() {
         try (Connection conn = getConnection();
              PreparedStatement stmt = conn.prepareStatement(
                  "SELECT * FROM reports WHERE id = ?")) {
-            
+
             stmt.setInt(1, searchId);
             ResultSet rs = stmt.executeQuery();
-            
+
             if (rs.next()) {
-                // Populate all fields from database
                 reportIdField.setText(rs.getString("report_id"));
                 nameArabicField.setText(rs.getString("name_arabic"));
                 nameEnglishField.setText(rs.getString("name_english"));
@@ -76,17 +76,17 @@ public class EditReportFormController implements Initializable {
                 hospitalEnglishField.setText(rs.getString("hospital_english"));
                 nationalityArabicField.setText(rs.getString("nationality_arabic"));
                 nationalityEnglishField.setText(rs.getString("nationality_english"));
-                
+
                 Date dateGregorian = rs.getDate("date_gregorian");
                 if (dateGregorian != null) {
                     reportDateGregorianField.setValue(dateGregorian.toLocalDate());
                 }
-                
+
                 Date endDateGregorian = rs.getDate("end_date_gregorian");
                 if (endDateGregorian != null) {
                     endDateGregorianField.setValue(endDateGregorian.toLocalDate());
                 }
-                
+
                 daysCountField.setText(String.valueOf(rs.getInt("days_count")));
                 reportDateHijriField.setText(rs.getString("date_hijri"));
                 startHijriField.setText(rs.getString("start_hijri"));
@@ -97,13 +97,12 @@ public class EditReportFormController implements Initializable {
                 idNumberField.setText(rs.getString("id_number"));
                 employerArabicField.setText(rs.getString("employer_arabic"));
                 licenseNumberField.setText(rs.getString("license_number"));
-                
-                // Kinship fields (if they exist in the database)
+
                 try {
                     kinshipArabicField.setText(rs.getString("kinship_arabic"));
                     kinshipEnglishField.setText(rs.getString("kinship_english"));
                 } catch (SQLException e) {
-                    // Kinship columns might not exist in all reports
+                    // Ignored: optional fields
                 }
             }
         } catch (SQLException e) {
@@ -111,7 +110,7 @@ public class EditReportFormController implements Initializable {
             showAlert("خطأ في قاعدة البيانات", "فشل في تحميل بيانات التقرير: " + e.getMessage());
         }
     }
-    
+
     private void saveChanges() {
         try (Connection conn = getConnection();
              PreparedStatement stmt = conn.prepareStatement(
@@ -127,8 +126,7 @@ public class EditReportFormController implements Initializable {
                  "time_string = ?, id_number = ?, employer_arabic = ?, " +
                  "license_number = ?, kinship_arabic = ?, kinship_english = ? " +
                  "WHERE id = ?")) {
-            
-            // Set all parameters from form fields
+
             int paramIndex = 1;
             stmt.setString(paramIndex++, reportIdField.getText());
             stmt.setString(paramIndex++, nameArabicField.getText());
@@ -141,23 +139,13 @@ public class EditReportFormController implements Initializable {
             stmt.setString(paramIndex++, hospitalEnglishField.getText());
             stmt.setString(paramIndex++, nationalityArabicField.getText());
             stmt.setString(paramIndex++, nationalityEnglishField.getText());
-            
-            // Handle dates
+
             LocalDate reportDate = reportDateGregorianField.getValue();
-            if (reportDate != null) {
-                stmt.setDate(paramIndex++, Date.valueOf(reportDate));
-            } else {
-                stmt.setNull(paramIndex++, Types.DATE);
-            }
-            
+            stmt.setDate(paramIndex++, reportDate != null ? Date.valueOf(reportDate) : null);
+
             LocalDate endDate = endDateGregorianField.getValue();
-            if (endDate != null) {
-                stmt.setDate(paramIndex++, Date.valueOf(endDate));
-            } else {
-                stmt.setNull(paramIndex++, Types.DATE);
-            }
-            
-            // Set other fields
+            stmt.setDate(paramIndex++, endDate != null ? Date.valueOf(endDate) : null);
+
             stmt.setInt(paramIndex++, Integer.parseInt(daysCountField.getText()));
             stmt.setString(paramIndex++, reportDateHijriField.getText());
             stmt.setString(paramIndex++, startHijriField.getText());
@@ -170,11 +158,9 @@ public class EditReportFormController implements Initializable {
             stmt.setString(paramIndex++, licenseNumberField.getText());
             stmt.setString(paramIndex++, kinshipArabicField.getText());
             stmt.setString(paramIndex++, kinshipEnglishField.getText());
-            
-            // Where clause
+
             stmt.setInt(paramIndex, searchId);
-            
-            // Execute update
+
             int rowsAffected = stmt.executeUpdate();
             if (rowsAffected > 0) {
                 showAlert("نجاح", "تم تحديث البيانات بنجاح");
@@ -189,16 +175,16 @@ public class EditReportFormController implements Initializable {
             showAlert("خطأ في الإدخال", "عدد الأيام يجب أن يكون رقماً: " + e.getMessage());
         }
     }
-    
+
     private Connection getConnection() throws SQLException {
         UserSession session = UserSession.getInstance();
         return DriverManager.getConnection(
-            session.getDbUrl(), 
-            session.getDbUser(), 
+            session.getDbUrl(),
+            session.getDbUser(),
             session.getDbPassword()
         );
     }
-    
+
     private void showAlert(String title, String message) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle(title);
@@ -206,7 +192,9 @@ public class EditReportFormController implements Initializable {
         alert.setContentText(message);
         alert.showAndWait();
     }
-    
+
+    // ✅ This method works both from FXML and internally
+    @FXML
     private void closeWindow() {
         Stage stage = (Stage) saveButton.getScene().getWindow();
         stage.close();

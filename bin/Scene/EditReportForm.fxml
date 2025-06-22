@@ -17,7 +17,7 @@
       fx:controller="EditReportFormController"
       style="-fx-padding: 20; -fx-background-color: #f0f5fa;">
     
-    <Label text="نموذج تعديل التقرير" style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #044e7c;">
+    <Label text="نموذج تعديل التقرير" style="-极-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #044e7c;">
         <font>
             <Font name="Noto IKEA Arabic Bold" size="24.0" />
         </font>

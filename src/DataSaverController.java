@@ -10,10 +10,12 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
 import java.io.IOException;
+import java.io.InputStream;
 import java.sql.*;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Consumer;
+import java.net.URL;
 
 public class DataSaverController {
 
@@ -173,24 +175,27 @@ public class DataSaverController {
         }
     }
     
-    private void handleEdit(DataModel data) {
+  private void handleEdit(DataModel data) {
         try {
-            // Load the edit form
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/Scene/EditReportForm.fxml"));
-            Parent root = loader.load();
-            
-            // Pass the search ID to the edit controller
-            EditReportFormController controller = loader.getController();
-            controller.setSearchId(data.getSearchId());
-            
-            Stage stage = new Stage();
-            stage.setScene(new Scene(root));
-            stage.setTitle("تعديل التقرير");
-            stage.show();
-        } catch (IOException e) {
-            e.printStackTrace();
-            showAlert("خطأ", "فشل في فتح نموذج التعديل: " + e.getMessage());
-        }
+        // 1) load the FXML
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/Scene/EditReportForm.fxml"));
+        Parent root = loader.load();
+
+        // 2) pass the selected report ID into the new controller
+        EditReportFormController ctrl = loader.getController();
+        ctrl.setSearchId(data.getSearchId());
+
+        // 3) show it in a new window (or reuse the existing one)
+        Stage stage = new Stage();                          // new window
+        // Stage stage = (Stage)((Node)event.getSource()).getScene().getWindow(); // reuse
+        stage.setTitle("تعديل التقرير");
+        stage.setScene(new Scene(root, 800, 600));          // tweak width/height as needed
+        stage.show();
+
+    } catch (IOException e) {
+        e.printStackTrace();
+        showAlert("خطأ", "لم أتمكن من فتح نموذج التعديل:\n" + e.getMessage());
+    }
     }
     
     private void handleLeave(DataModel data) {
