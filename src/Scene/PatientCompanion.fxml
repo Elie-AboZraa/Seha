@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.ToolBar?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" 
+            prefHeight="900.0" prefWidth="1400.0" stylesheets="@SceneStyle/CreateLeavePage.css" 
+            xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" 
+            fx:controller="PatientCompanionControl">
+   <children>
+      <Label layoutX="582.0" layoutY="86.0" prefHeight="22.0" prefWidth="236.0" text="إدخال بيانات مرافق المريض">
+         <font>
+            <Font name="Noto IKEA Arabic Bold" size="46.0" />
+         </font>
+      </Label>
+      <ToolBar prefHeight="60.0" prefWidth="1400.0">
+        <items>
+          <Button mnemonicParsing="false" onAction="#BackToHomePAge" text="القائمة">
+               <font>
+                  <Font name="Noto IKEA Arabic Bold" size="20.0" />
+               </font>
+            </Button>
+            <Button mnemonicParsing="false" text="تقرير طبي">
+               <font>
+                  <Font name="Noto IKEA Arabic Bold" size="20.0" />
+               </font>
+            </Button>
+            <Button mnemonicParsing="false" text="مرافق مريض">
+               <font>
+                  <Font name="Noto IKEA Arabic Bold" size="20.0" />
+               </font>
+            </Button>
+            <Button contentDisplay="CENTER" mnemonicParsing="false" onAction="#theDataPage" text="حفظ الاجازة">
+               <font>
+                  <Font name="Noto IKEA Arabic Bold" size="20.0" />
+               </font>
+            </Button>
+            <Button alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#NewCreateLeave" text="اجازة جديدة">
+               <font>
+                  <Font name="Noto IKEA Arabic Bold" size="20.0" />
+               </font>
+            </Button>
+        </items>
+      </ToolBar>
+      <Pane layoutX="28.0" layoutY="108.0" prefHeight="790.0" prefWidth="1292.0">
+         <children>
+            <Label layoutX="666.0" layoutY="292.0" text="أختصاص الطبيب عربي:" />
+            <Label layoutX="1164.0" layoutY="195.0" text="رقم الإجازة:" />
+            <Label layoutX="1089.0" layoutY="382.0" text="اسم المستشفى عربي:" />
+            <TextArea layoutX="51.0" layoutY="25.0" nodeOrientation="RIGHT_TO_LEFT" prefHeight="142.0" prefWidth="1200.0" />
+            <Label layoutX="781.0" layoutY="638.0" text="الساعة:" />
+            <Label layoutX="909.0" layoutY="549.0" text="بداية التقرير هجري:" />
+            <Label layoutX="477.0" layoutY="549.0" text="بداية التقرير ميلادي:" />
+            <Label layoutX="560.0" layoutY="629.0" text="التاريخ:" />
+            <Label layoutX="751.0" layoutY="463.0" text="عدد الايام:" />
+            <Label layoutX="879.0" layoutY="463.0" text="نهاية التقرير بالميلادي:" />
+            <Label layoutX="700.0" layoutY="549.0" text="نهاية التقرير هجري:" />
+            <Label layoutX="1118.0" layoutY="549.0" text="تاريخ التقرير هجري:" />
+            <Label layoutX="497.0" layoutY="195.0" text="الإسم بالانجليزي:" />
+            <Label layoutX="1152.0" layoutY="629.0" text="الجنسية عربي:" />
+            <Label layoutX="927.0" layoutY="638.0" text="الجنسية انجليزي:" />
+            <Label layoutX="525.0" layoutY="463.0" text="رقم الترخيص:" />
+            <Label layoutX="1084.0" layoutY="463.0" text="تاريخ التقرير بالميلادي:" />
+            <Label layoutX="713.0" layoutY="383.0" text="جهة العمل عربي:" />
+            <Label layoutX="863.0" layoutY="383.0" text="اسم المستشفى انجليزي:" />
+            <Label layoutX="441.0" layoutY="292.0" text="اختصاص الطبيب انجليزي:" />
+            <Label layoutX="730.0" layoutY="195.0" text="الأسم بالعربي:" />
+            <Label layoutX="909.0" layoutY="195.0" text="رقم الهوية/الإقامة: " />
+            <Label layoutX="883.0" layoutY="292.0" text="اسم الطبيب انجليزي:" />
+            <Label layoutX="1106.0" layoutY="292.0" text="اسم الطبيب العربي:" />
+            <TextField fx:id="ReportID" alignment="CENTER_RIGHT" layoutX="1051.0" layoutY="225.0" onAction="#ReportID" prefHeight="30.0" prefWidth="200.0" />
+            <TextField fx:id="IdNumber" alignment="CENTER_RIGHT" layoutX="840.0" layoutY="225.0" prefHeight="30.0" prefWidth="200.0" />
+            <TextField fx:id="NameInArabic" alignment="CENTER_RIGHT" layoutX="633.0" layoutY="225.0" prefHeight="30.0" prefWidth="200.0" />
+            <TextField fx:id="NameInEnglish" alignment="CENTER_RIGHT" layoutX="422.0" layoutY="225.0" prefHeight="30.0" prefWidth="200.0" />
+            <TextField fx:id="DoctorNameInArabic" alignment="CENTER_RIGHT" layoutX="1051.0" layoutY="317.0" prefHeight="30.0" prefWidth="200.0" />
+            <TextField fx:id="DoctorNameInEnglish" alignment="CENTER_RIGHT" layoutX="840.0" layoutY="317.0" prefHeight="30.0" prefWidth="200.0" />
+            <TextField fx:id="DoctorSpecialtyInArabic" alignment="CENTER_RIGHT" layoutX="633.0" layoutY="317.0" prefHeight="30.0" prefWidth="200.0" />
+            <TextField fx:id="DoctorSpecialtyInEnglish" alignment="CENTER_RIGHT" layoutX="422.0" layoutY="317.0" prefHeight="30.0" prefWidth="200.0" />
+            <TextField fx:id="HospitalNameInArabic" alignment="CENTER_RIGHT" layoutX="1051.0" layoutY="408.0" prefHeight="30.0" prefWidth="200.0" />
+            <TextField fx:id="HospitalNameInEnglish" alignment="CENTER_RIGHT" layoutX="841.0" layoutY="408.0" prefHeight="30.0" prefWidth="200.0" />
+            <TextField fx:id="EmployerArabic" alignment="CENTER_RIGHT" layoutX="633.0" layoutY="408.0" prefHeight="30.0" prefWidth="200.0" />
+            <DatePicker fx:id="ReportDateInGregorian" layoutX="1052.0" layoutY="488.0" prefHeight="30.0" prefWidth="200.0" />
+            <DatePicker fx:id="EndOFReportInGregorian" layoutX="844.0" layoutY="488.0" prefHeight="30.0" prefWidth="200.0" />
+            <TextField fx:id="NumberOfDays" alignment="CENTER_RIGHT" layoutX="633.0" layoutY="489.0" prefHeight="30.0" prefWidth="200.0" />
+            <TextField fx:id="LicenseNumber" alignment="CENTER_RIGHT" layoutX="422.0" layoutY="489.0" prefHeight="30.0" prefWidth="200.0" />
+            <TextField fx:id="ReportDateHijri" alignment="CENTER_RIGHT" layoutX="1054.0" layoutY="576.0" prefHeight="30.0" prefWidth="200.0" />
+            <TextField fx:id="StartOfTheHijriReport" alignment="CENTER_RIGHT" layoutX="845.0" layoutY="576.0" prefHeight="30.0" prefWidth="200.0" />
+            <TextField fx:id="EndOfHijriReport" alignment="CENTER_RIGHT" layoutX="633.0" layoutY="576.0" prefHeight="30.0" prefWidth="200.0" />
+            <TextField fx:id="BeginningOfTheADReport" alignment="CENTER_RIGHT" layoutX="422.0" layoutY="576.0" prefHeight="30.0" prefWidth="200.0" />
+            <TextField fx:id="NationalityInArabic" alignment="CENTER_RIGHT" layoutX="1063.0" layoutY="665.0" prefHeight="30.0" prefWidth="200.0" />
+            <TextField fx:id="NationalityInEnglish" alignment="CENTER_RIGHT" layoutX="852.0" layoutY="664.0" prefHeight="30.0" prefWidth="200.0" />
+            <TextField fx:id="Time" alignment="CENTER_RIGHT" layoutX="639.0" layoutY="660.0" prefHeight="30.0" prefWidth="200.0" text="09:46AM" />
+            <TextField fx:id="Date" alignment="CENTER_RIGHT" layoutX="422.0" layoutY="655.0" prefHeight="30.0" prefWidth="200.0" />
+            
+            <!-- Add image selection components -->
+            <Button fx:id="selectImageButton" layoutX="60.0" layoutY="704.0" mnemonicParsing="false" onAction="#selectImage" prefHeight="54.0" prefWidth="236.0" text="اختر صورة للتوقيع" />
+            <ImageView fx:id="imagePreview" fitHeight="50.0" fitWidth="50.0" layoutX="309.0" layoutY="712.0" preserveRatio="true" />
+            <Button fx:id="save" layoutX="455.0" layoutY="718.0" mnemonicParsing="false" onAction="#saveTheData" prefHeight="51.0" prefWidth="392.0" text="حفظ المعلومات" />
+            
+            <!-- Kinship relationship fields -->
+            <TextField fx:id="kinshipArabic" alignment="CENTER_RIGHT" layoutX="219.0" layoutY="576.0" prefHeight="30.0" prefWidth="200.0" />
+            <TextField fx:id="kinshipEnglish" alignment="CENTER_RIGHT" layoutX="9.0" layoutY="576.0" prefHeight="30.0" prefWidth="200.0" />
+            <Label layoutX="330.0" layoutY="550.0" text="صلة القرابة:" />
+            <Label layoutX="67.0" layoutY="553.0" text="صلة القرابة انجليزي:" />
+         </children>
+      </Pane>
+   </children>
+</AnchorPane>
