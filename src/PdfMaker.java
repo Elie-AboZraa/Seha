@@ -104,9 +104,9 @@ public class PdfMaker {
             if (customImagePath != null && !customImagePath.isEmpty()) {
                 try {
                     PDImageXObject customImage = PDImageXObject.createFromFile(customImagePath, document);
-                    float imageSize = 100;
-                    float x = pageWidth - imageSize - 120;
-                    float y = 170;
+                    float imageSize = 85;
+                    float x = pageWidth - imageSize - 105;
+                    float y = 220;
                     cs.drawImage(customImage, x, y, imageSize, imageSize);
                 } catch (IOException e) {
                     System.err.println("Error loading custom image: " + e.getMessage());
@@ -173,8 +173,8 @@ public class PdfMaker {
 
             // === FOOTER: Time and date in black at left corner ===
             cs.setNonStrokingColor(BLACK);
-            TextPosition timePos = new TextPosition(50, 20, Time, false); 
-            TextPosition datePos = new TextPosition(50, 5, Date, false); 
+            TextPosition timePos = new TextPosition(50, 115, Time, false); 
+            TextPosition datePos = new TextPosition(50, 100, Date, false); 
             renderText(cs, font, footerFontSize, timePos);
             renderText(cs, font, footerFontSize, datePos);
         }
