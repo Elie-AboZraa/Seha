@@ -30,7 +30,7 @@
                   <Font name="Noto IKEA Arabic Bold" size="20.0" />
                </font>
             </Button>
-            <Button mnemonicParsing="false" text="مرافق مريض">
+            <Button mnemonicParsing="false" onAction="#PatientCompanion" text="مرافق مريض">
                <font>
                   <Font name="Noto IKEA Arabic Bold" size="20.0" />
                </font>

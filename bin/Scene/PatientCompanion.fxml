@@ -11,10 +11,7 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" 
-            prefHeight="900.0" prefWidth="1400.0" stylesheets="@SceneStyle/CreateLeavePage.css" 
-            xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" 
-            fx:controller="PatientCompanionControl">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="900.0" prefWidth="1400.0" stylesheets="@SceneStyle/CreateLeavePage.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="PatientCompanionControl">
    <children>
       <Label layoutX="582.0" layoutY="86.0" prefHeight="22.0" prefWidth="236.0" text="إدخال بيانات مرافق المريض">
          <font>
@@ -33,7 +30,7 @@
                   <Font name="Noto IKEA Arabic Bold" size="20.0" />
                </font>
             </Button>
-            <Button mnemonicParsing="false" text="مرافق مريض">
+            <Button mnemonicParsing="false" onAction="#PatientCompanion" text="مرافق مريض">
                <font>
                   <Font name="Noto IKEA Arabic Bold" size="20.0" />
                </font>

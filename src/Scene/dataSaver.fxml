@@ -25,7 +25,7 @@
                <font>
                   <Font name="Noto IKEA Arabic Bold" size="12.0" />
                </font></Button>
-          <Button mnemonicParsing="false" prefHeight="52.0" prefWidth="203.0" text="مرافق المريض">
+          <Button mnemonicParsing="false" onAction="#PatientCompanion" prefHeight="52.0" prefWidth="203.0" text="مرافق المريض">
                <font>
                   <Font name="Noto IKEA Arabic Bold" size="12.0" />
                </font></Button>

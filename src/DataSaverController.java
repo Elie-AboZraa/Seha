@@ -198,6 +198,15 @@ public class DataSaverController {
         stage.setScene(scene);
         stage.show();
     }
+    @FXML
+    void PatientCompanion(ActionEvent event) throws IOException {
+        Parent root = FXMLLoader.load(getClass().getResource("/Scene/PatientCompanion.fxml"));
+        Stage stage = (Stage)((Node)event.getSource()).getScene().getWindow();
+        Scene scene = new Scene(root, 1400, 900);
+        scene.getStylesheets().add(getClass().getResource("/Scene/SceneStyle/CreateLeavePage.css").toExternalForm());
+        stage.setScene(scene);
+        stage.show();
+    }
     
     public static class DataModel {
         private final int searchId;
